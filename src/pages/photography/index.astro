@@ -4,43 +4,164 @@ import Base from '../../layouts/Base.astro';
 import { getSeries } from '../../lib/work';
 
 const series = await getSeries();
+const [lead, ...remaining] = series;
+const pad = (number: number) => String(number).padStart(2, '0');
 ---
-<Base title="Photography" description="Photographic series by Axel Tidehorn." sheet="Photography" image={series[0]?.data.cover.src}>
-  <div class="wrap">
-    <header class="sec-head rule"><span class="label">01</span><h1>Photography</h1><span class="label">{String(series.length).padStart(2, '0')} series</span></header>
-    <div class="photo__tools"><span class="label">Behind the photographs</span><a href="/gear/">Cameras &amp; equipment ↗</a></div>
-    <ol class="series">
-      {series.map((s, i) => (
-        <li>
-          <a class="snap" href={`/photography/${s.id}/`} style={`--r: ${s.data.cover.src.height / s.data.cover.src.width}; --snap-max: 76vh`}>
-            <div><Image src={s.data.cover.src} alt={s.data.cover.alt} widths={[640, 1000, 1500, 2000]} sizes="(min-width: 900px) 66vw, 100vw" quality={85} loading={i === 0 ? 'eager' : 'lazy'} /></div>
-          </a>
-          <div class="series__text rule">
-            <span class="label">{String(i + 1).padStart(2, '0')} · {s.data.images.length} images</span>
-            <h2><a href={`/photography/${s.id}/`}>{s.data.title}</a></h2>
-            <p>{s.data.summary}</p>
-            {s.data.placeholder && <span class="badge">Placeholder</span>}
+<Base title="Photography" description="Photographic series by Axel Tidehorn." sheet="Photography" image={lead?.data.cover.src}>
+  <div class="wrap photo-page">
+    <header class="photo-head">
+      <div class="photo-head__eyebrow">
+        <span class="label">Axel Tidehorn / Photography</span>
+        <span class="label">{pad(series.length)} series</span>
+      </div>
+      <div class="photo-head__main">
+        <h1>Photography<span class="photo-head__period">.</span></h1>
+        <p>A selection of photographs and ongoing series.</p>
+      </div>
+    </header>
+
+    {lead && (
+      <article class="lead" aria-labelledby="lead-title">
+        <a class="lead__image" href={`/photography/${lead.id}/`} aria-label={`View ${lead.data.title}`}>
+          <Image
+            src={lead.data.cover.src}
+            alt={lead.data.cover.alt}
+            widths={[640, 960, 1400, 2000, 2600]}
+            sizes="(min-width: 1400px) 1450px, 100vw"
+            quality={86}
+            loading="eager"
+          />
+        </a>
+        <div class="lead__information">
+          <span class="lead__number" aria-hidden="true">01</span>
+          <div class="lead__copy">
+            <span class="label">Selected photographic series</span>
+            <h2 id="lead-title"><a href={`/photography/${lead.id}/`}>{lead.data.title}</a></h2>
+            <p>{lead.data.summary}</p>
           </div>
-        </li>
-      ))}
-    </ol>
+          <a class="lead__action" href={`/photography/${lead.id}/`}>View series</a>
+        </div>
+      </article>
+    )}
+
+    {remaining.length > 0 && (
+      <section class="series-list" aria-label="More photographic series">
+        {remaining.map((entry, index) => (
+          <article class:list={['series-entry', { 'series-entry--offset': index % 2 === 0 }]} aria-labelledby={`series-title-${index}`}>
+            <a class="series-entry__image" href={`/photography/${entry.id}/`} aria-label={`View ${entry.data.title}`}>
+              <Image
+                src={entry.data.cover.src}
+                alt={entry.data.cover.alt}
+                widths={[640, 960, 1400, 2000]}
+                sizes="(min-width: 900px) 78vw, 100vw"
+                quality={85}
+                loading="lazy"
+              />
+            </a>
+            <div class="series-entry__information">
+              <span class="series-entry__number">{pad(index + 2)}</span>
+              <div>
+                <h2 id={`series-title-${index}`}><a href={`/photography/${entry.id}/`}>{entry.data.title}</a></h2>
+                <p>{entry.data.summary}</p>
+              </div>
+              <a class="series-entry__action" href={`/photography/${entry.id}/`}>View series</a>
+            </div>
+          </article>
+        ))}
+      </section>
+    )}
+
+    <footer class="photo-foot">
+      <p>The photographs come first. The equipment is a secondary part of the process.</p>
+      <a href="/gear/">Photography equipment</a>
+    </footer>
   </div>
 </Base>
 
 <style>
-  .sec-head h1 { font-size: clamp(32px, 4vw, 52px); }
-  .photo__tools { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; margin-bottom: 32px; padding-bottom: 12px; border-bottom: 1px solid var(--rule-soft); }
-  .photo__tools a { text-decoration: none; font-weight: 650; }
-  .series { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space); }
-  .series li { display: grid; gap: 24px; }
-  .series a.snap { display: block; }
-  .series img { max-height: 76vh; width: auto; }
-  .series__text { --rt: var(--w-outline); padding-top: 8px; }
-  .series__text h2 { margin: 8px 0; }
-  .series__text h2 a { text-decoration: none; }
-  .series__text p { color: var(--ink-2); max-width: 480px; }
-  @media (min-width: 1100px) {
-    /* Same column split as the homepage hero: 1fr + 320px with a 40px gap. */
-    .series li { grid-template-columns: minmax(0, 1fr) 320px; gap: var(--gap); align-items: end; }
+  /* A photographic index, not a list of project cards. */
+  .photo-head { padding-bottom: clamp(24px, 4vw, 56px); }
+  .photo-head__eyebrow {
+    display: flex; justify-content: space-between; flex-wrap: wrap;
+    gap: 8px 24px; border-top: 2px solid var(--ink);
+    padding-top: 12px; margin-bottom: clamp(20px, 4vw, 52px);
+  }
+  .photo-head__main { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 36px; }
+  .photo-head h1 {
+    margin: 0; font-size: clamp(42px, 6.7vw, 102px);
+    font-weight: 820; font-stretch: 73%; line-height: .88; letter-spacing: -.055em;
+  }
+  .photo-head__period { color: var(--accent); }
+  .photo-head p { max-width: 280px; margin: 0 0 4px; font-size: clamp(15px, 1.5vw, 20px); line-height: 1.28; color: var(--ink-2); }
+
+  .lead { margin-bottom: clamp(64px, 10vw, 154px); }
+  .lead__image, .series-entry__image { display: block; text-decoration: none; }
+  .lead__image img {
+    display: block; width: auto; max-width: 100%; height: auto;
+    max-height: min(78svh, 1000px);
+    margin-inline: auto;
+  }
+  .lead__information {
+    display: grid; grid-template-columns: clamp(66px, 10vw, 140px) minmax(0, 1fr) auto;
+    gap: clamp(14px, 2.8vw, 46px); align-items: center;
+    margin-top: 12px; padding-top: clamp(13px, 2vw, 28px);
+    border-top: 2px solid var(--ink);
+  }
+  .lead__number {
+    align-self: stretch; display: grid; place-items: center;
+    background: var(--accent); font-size: clamp(32px, 5.3vw, 74px);
+    font-weight: 800; font-stretch: 70%; letter-spacing: -.05em;
+  }
+  .lead__copy .label { display: block; margin-bottom: 7px; }
+  .lead h2 { font-size: clamp(30px, 4.8vw, 70px); line-height: .96; letter-spacing: -.045em; margin: 0 0 8px; }
+  .lead h2 a, .series-entry h2 a { text-decoration: none; }
+  .lead h2 a:hover, .series-entry h2 a:hover { text-decoration: underline; }
+  .lead__copy p { font-size: clamp(15px, 1.4vw, 20px); color: var(--ink-2); margin: 0; max-width: 620px; }
+  .lead__action, .series-entry__action {
+    align-self: end; white-space: nowrap; font-size: 14px;
+    font-weight: 690; text-decoration: underline; text-underline-offset: 5px;
+    padding-bottom: 5px;
+  }
+
+  .series-list { display: grid; gap: clamp(64px, 10vw, 160px); }
+  .series-entry { width: min(92%, 1300px); }
+  .series-entry--offset { margin-left: auto; }
+  .series-entry__image img {
+    display: block; width: auto; max-width: 100%; height: auto;
+    max-height: min(75svh, 900px);
+    margin-inline: auto;
+  }
+  .series-entry__information {
+    display: grid; grid-template-columns: clamp(48px, 7vw, 92px) minmax(0, 1fr) auto;
+    gap: clamp(12px, 2.5vw, 32px); align-items: start;
+    border-top: 2px solid var(--ink); padding-top: 16px; margin-top: 10px;
+  }
+  .series-entry__number { font: 700 clamp(19px, 2.4vw, 36px)/1 var(--font-mono); color: var(--accent-ink); }
+  .series-entry h2 { font-size: clamp(26px, 3.8vw, 55px); line-height: 1; margin: 0 0 8px; }
+  .series-entry p { color: var(--ink-2); margin: 0; max-width: 620px; }
+
+  .photo-foot {
+    display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap;
+    gap: 10px 30px; margin-top: clamp(70px, 12vw, 170px);
+    padding: 24px 0 0; border-top: 6px solid var(--accent);
+  }
+  .photo-foot p { max-width: 470px; color: var(--ink-2); }
+  .photo-foot a { font-weight: 700; text-decoration: underline; text-underline-offset: 5px; }
+
+  @media (max-width: 700px) {
+    .photo-head__eyebrow { margin-bottom: 25px; }
+    .photo-head__main { display: block; }
+    .photo-head h1 { margin-bottom: 15px; }
+    .photo-head p { font-size: 16px; max-width: 290px; }
+    .lead__information { grid-template-columns: 58px minmax(0, 1fr); gap: 10px 15px; align-items: start; }
+    .lead__number { min-height: 64px; }
+    .lead__copy .label { font-size: 10px; }
+    .lead h2 { font-size: clamp(28px, 8vw, 44px); }
+    .lead__action { grid-column: 2; justify-self: start; }
+    .series-entry { width: 100%; }
+    .series-entry__information { grid-template-columns: 40px minmax(0, 1fr); gap: 10px 14px; }
+    .series-entry__action { grid-column: 2; justify-self: start; }
+    .series-entry h2 { font-size: clamp(28px, 7.4vw, 44px); }
+    .photo-foot { margin-top: 70px; }
   }
 </style>
