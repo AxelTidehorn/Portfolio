@@ -1,250 +1,297 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import WorkCard from '../components/WorkCard.astro';
 import { site } from '../data/site';
 import { getAllWork } from '../lib/work';
 
 const all = await getAllWork();
-const featuredPhoto = all.filter((w) => w.featured && w.kind === 'Photography');
-const featuredOther = all.filter((w) => w.featured && w.kind !== 'Photography');
-const selected = [...featuredPhoto, ...featuredOther];
-const counts = {
-  '/photography/': all.filter((w) => w.kind === 'Photography').length,
-  '/projects/': all.filter((w) => w.kind !== 'Photography').length,
-};
+const features = [
+  ...all.filter((item) => item.featured && item.kind === 'Photography'),
+  ...all.filter((item) => item.featured && item.kind !== 'Photography'),
+];
+const pageSize = 5;
+const indexPages = Array.from(
+  { length: Math.ceil(all.length / pageSize) },
+  (_, index) => all.slice(index * pageSize, (index + 1) * pageSize),
+);
+const total = 1 + features.length + indexPages.length + 1;
 const pad = (n: number) => String(n).padStart(2, '0');
+const nextAfterIntro = features.length ? 'feature-1' : indexPages.length ? 'index-1' : 'explore';
+const nextAfterFeatures = indexPages.length ? 'index-1' : 'explore';
 const hero = site.hero.image;
 ---
 <Base image={hero} sheet="Index">
-  <section id="intro" class="hero wrap" aria-labelledby="home-title">
-    <div class="hero__heading">
-      <div class="hero__eyebrow">
-        <span class="label">Photography / Design / Engineering</span>
-        <span class="label">Independent practice · Sweden</span>
-      </div>
-      <h1 id="home-title">Axel <span>Tidehorn<span class="hero__dot">.</span></span></h1>
-      <p>Photographs, things made, and things in progress.</p>
-    </div>
-    <div class="hero__composition">
-      <figure class="hero__figure">
-        <Image
-          src={hero}
-          alt={site.hero.alt}
-          widths={[800, 1200, 1800, 2400, 3000]}
-          sizes="(min-width: 1000px) 73vw, 100vw"
-          quality={86}
-          loading="eager"
-          fetchpriority="high"
-        />
-        <figcaption>
-          <span class="label">01 / Featured photograph</span>
+  <section class="stage stage--intro wrap" id="intro" aria-labelledby="home-title">
+    <div class="stage__layout intro-layout">
+      <figure class="stage__figure">
+        <div class="stage__image">
+          <Image
+            src={hero}
+            alt={site.hero.alt}
+            widths={[800, 1200, 1800, 2400, 3000]}
+            sizes="(min-width: 760px) 73vw, 100vw"
+            quality={86}
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+        <figcaption class="image-caption">
+          <span class="label">Photograph / 001</span>
           {site.hero.placeholder && <span class="badge">Placeholder</span>}
         </figcaption>
       </figure>
-      <aside class="hero__side" aria-label="Explore the portfolio">
-        <div class="hero__side-top"><span class="label">AT / Portfolio</span><span aria-hidden="true">↗</span></div>
-        <div>
-          <p>{site.intro}</p>
-          <nav aria-label="Explore work">
-            {site.nav.slice(0, 2).map((n) => (
-              <a href={n.href}>
-                <span>{n.label}</span>
-                <span class="label">{pad(counts[n.href as keyof typeof counts])} ↗</span>
-              </a>
-            ))}
-          </nav>
+      <div class="intro-copy">
+        <div class="intro-copy__top">
+          <span class="label">Independent practice / Sweden</span>
+          <span class="intro-copy__mark" aria-hidden="true">↗</span>
         </div>
-      </aside>
+        <div class="intro-copy__bottom">
+          <h1 id="home-title">Axel<br />Tidehorn<span>.</span></h1>
+          <p>Photography, product design, engineering and experiments.</p>
+          <a class="chapter-link" href="/photography/">Explore photography <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="stage__foot">
+      <span class="label">01 / {pad(total)} · Introduction</span>
+      <a class="stage__next" href={`#${nextAfterIntro}`}>Next composition <span aria-hidden="true">↓</span></a>
     </div>
   </section>
 
-  <section id="work" class="selected wrap" aria-labelledby="sel">
-    <header class="section-heading">
-      <div class="section-heading__marker"><span class="label">02 / The work</span><span aria-hidden="true">↘</span></div>
-      <div class="section-heading__copy">
-        <h2 id="sel">Selected work</h2>
-        <span class="label">{pad(selected.length)} selected projects and photo series</span>
-      </div>
-    </header>
-    <div class="selected__grid">
-      {selected.map((w, i) => (
-        <WorkCard
-          href={w.href}
-          no={pad(i + 1)}
-          title={w.title}
-          kind={w.kind}
-          summary={w.summary}
-          cover={w.cover}
-          placeholder={w.placeholder}
-          sizes={i === 0 ? '(min-width: 760px) 75vw, 100vw' : '(min-width: 760px) 46vw, 100vw'}
-        />
-      ))}
-    </div>
-    <div class="selected__links">
-      <a href="/photography/">All photography ↗</a>
-      <a href="/projects/">All projects ↗</a>
-    </div>
-  </section>
+  {features.map((work, i) => {
+    const nextId = i + 1 < features.length ? `feature-${i + 2}` : nextAfterFeatures;
+    const isPhoto = work.kind === 'Photography';
+    const inverse = i % 2 === 1;
+    return (
+      <section
+        class:list={['stage', 'stage--feature', 'wrap', { 'stage--inverse': inverse, 'stage--photo': isPhoto }]}
+        id={`feature-${i + 1}`}
+        aria-labelledby={`feature-title-${i + 1}`}
+      >
+        <div class="stage__layout feature-layout">
+          <figure class="stage__figure">
+            <div class="stage__image">
+              <Image
+                src={work.cover.src}
+                alt={work.cover.alt}
+                widths={[480, 800, 1200, 1600, 2000]}
+                sizes="(min-width: 760px) 70vw, 100vw"
+                quality={86}
+                loading="lazy"
+              />
+            </div>
+            <figcaption class="image-caption">
+              <span class="label">{isPhoto ? 'Photography' : 'Project'} / {pad(i + 1)}</span>
+              {work.placeholder && <span class="badge">Placeholder</span>}
+            </figcaption>
+          </figure>
+          <div class="feature-copy">
+            <div class="feature-copy__top">
+              <span class="label">{isPhoto ? 'Photographic work' : 'Making and experimenting'}</span>
+              <span class="feature-copy__index">{pad(i + 1)}</span>
+            </div>
+            <div class="feature-copy__bottom">
+              <h2 id={`feature-title-${i + 1}`}>{work.title}</h2>
+              <p>{work.summary}</p>
+              <a class="chapter-link" href={work.href}>View {isPhoto ? 'photo series' : 'project'} <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </div>
+        <div class="stage__foot">
+          <span class="label">{pad(i + 2)} / {pad(total)} · {isPhoto ? 'Photography' : 'Selected project'}</span>
+          <a class="stage__next" href={`#${nextId}`}>Next composition <span aria-hidden="true">↓</span></a>
+        </div>
+      </section>
+    );
+  })}
 
-  <section id="directory" class="index wrap" aria-labelledby="idx">
-    <header class="section-heading section-heading--index">
-      <div class="section-heading__marker"><span class="label">03 / Directory</span><span aria-hidden="true">↗</span></div>
-      <div class="section-heading__copy">
-        <h2 id="idx">Index of work</h2>
-        <span class="label">{pad(all.length)} entries</span>
+  {indexPages.map((page, pageIndex) => {
+    const nextId = pageIndex + 1 < indexPages.length ? `index-${pageIndex + 2}` : 'explore';
+    return (
+      <section class="stage stage--index wrap" id={`index-${pageIndex + 1}`} aria-labelledby={`index-title-${pageIndex + 1}`}>
+        <div class="stage__layout index-layout">
+          <header class="index-heading">
+            <div class="index-heading__label">
+              <span class="label">Directory / {pad(pageIndex + 1)}</span>
+              <span aria-hidden="true">↗</span>
+            </div>
+            <div class="index-heading__title">
+              <h2 id={`index-title-${pageIndex + 1}`}>Index of work</h2>
+              <span class="label">{pad(all.length)} total entries</span>
+            </div>
+          </header>
+          <ol class="index-list" start={pageIndex * pageSize + 1} style={`--entries: ${page.length}`}>
+            {page.map((work, itemIndex) => (
+              <li>
+                <a href={work.href}>
+                  <span class="index-list__number">{pad(pageIndex * pageSize + itemIndex + 1)}</span>
+                  <strong>{work.title}</strong>
+                  <span class="index-list__kind">{work.kind}</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <div class="stage__foot">
+          <span class="label">{pad(2 + features.length + pageIndex)} / {pad(total)} · Directory</span>
+          <a class="stage__next" href={`#${nextId}`}>Next composition <span aria-hidden="true">↓</span></a>
+        </div>
+      </section>
+    );
+  })}
+
+  <section class="stage stage--closing wrap" id="explore" aria-labelledby="explore-title">
+    <div class="stage__layout closing-layout">
+      <div class="closing-layout__top">
+        <span class="label">Axel Tidehorn / Index</span>
+        <span class="label">Photography first. Everything else alongside it.</span>
       </div>
-    </header>
-    <table>
-      <thead>
-        <tr><th scope="col" class="label">No.</th><th scope="col" class="label">Title</th><th scope="col" class="label">Type</th><th scope="col" class="label">Status</th></tr>
-      </thead>
-      <tbody>
-        {all.map((w, i) => (
-          <tr>
-            <td class="label">{pad(i + 1)}</td>
-            <td class="index__title"><a href={w.href}>{w.title}</a></td>
-            <td>{w.kind}</td>
-            <td>{w.status ?? '—'}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+      <div class="closing-layout__links">
+        <h2 id="explore-title">Explore.</h2>
+        <a href="/photography/">Photography <span aria-hidden="true">↗</span></a>
+        <a href="/projects/">Projects <span aria-hidden="true">↗</span></a>
+        <a href="/about/">About <span aria-hidden="true">↗</span></a>
+        <a href="/gear/">Photo gear <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="closing-layout__bottom">
+        <span class="label">© {site.name}</span>
+        <span class="label">{site.url.replace('https://', '')}</span>
+      </div>
+    </div>
+    <div class="stage__foot">
+      <span class="label">{pad(total)} / {pad(total)} · End</span>
+      <a class="stage__next" href="#intro">Back to first composition <span aria-hidden="true">↑</span></a>
+    </div>
   </section>
 </Base>
 
 <style>
-  /* Intentional chapter navigation on the homepage only. Mandatory snap
-     makes the chapter boundaries real rather than an occasional proximity
-     effect. Oversized sections remain freely scrollable within their content;
-     no fixed heights, wheel interception, nested scroll areas or smooth-scroll
-     overrides. Reduced-motion users receive ordinary scrolling. */
-  @media (prefers-reduced-motion: no-preference) {
-    :global(html:has(#intro)) {
-      scroll-snap-type: y mandatory;
-      scroll-padding-top: 0;
-    }
-    #intro, #work, #directory {
-      scroll-snap-align: start;
-      scroll-snap-stop: normal;
-    }
-    /* The masthead is before the first chapter. Treat it as part of the
-       opening composition so the initial snap position stays at page top. */
-    #intro { scroll-margin-top: clamp(80px, 8vw, 122px); }
+  /* Every stage is one complete, viewport-sized composition.
+     Height is bounded on normal devices, not inferred from a long content grid. */
+  .stage {
+    height: calc(100svh - var(--presentation-header-height));
+    min-height: 0;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 0;
+    padding-top: clamp(12px, 1.8svh, 20px);
+    padding-bottom: 8px;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
+  .stage__layout { min-height: 0; overflow: hidden; }
+  .stage__foot {
+    min-height: 38px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 16px; border-top: 1px solid var(--ink); padding: 9px 0 2px;
+  }
+  .stage__next { font: 500 12px/1.3 var(--font-mono); text-decoration: none; }
+  .stage__next:hover { text-decoration: underline; }
+  .stage__figure { display: grid; grid-template-rows: minmax(0, 1fr) auto; min-width: 0; min-height: 0; margin: 0; }
+  .stage__image { display: grid; place-items: center; min-height: 0; min-width: 0; overflow: hidden; background: var(--paper-2); }
+  .stage__image img { display: block; height: 100%; width: 100%; object-fit: contain; object-position: center; }
+  .image-caption { min-height: 30px; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 6px 0; }
+  .image-caption .badge { font-size: 9px; }
+  .intro-layout, .feature-layout { display: grid; grid-template-columns: minmax(0, 2.1fr) minmax(250px, .85fr); gap: clamp(10px, 1.8vw, 28px); }
 
-  /* A photograph-led first composition. Typography identifies the maker; it does not replace the image. */
-  .hero { margin-bottom: clamp(72px, 9vw, 140px); }
-  .hero__heading { padding-bottom: clamp(16px, 2.3vw, 32px); }
-  .hero__eyebrow { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px; margin-bottom: clamp(14px, 2vw, 28px); }
-  .hero__heading h1 {
-    font-size: clamp(44px, 7.3vw, 106px);
-    line-height: .94;
-    font-weight: 790;
-    font-stretch: 76%;
-    letter-spacing: -.055em;
-    margin: 0 0 14px;
-  }
-  .hero__heading h1 span { white-space: nowrap; }
-  .hero__dot { color: var(--accent); }
-  .hero__heading > p { font-size: clamp(17px, 1.8vw, 25px); line-height: 1.25; max-width: 650px; margin: 0; }
-  .hero__composition { display: grid; gap: 0; align-items: stretch; }
-  .hero__figure { margin: 0; min-width: 0; display: flex; flex-direction: column; }
-  .hero__figure img {
-    width: 100%; height: auto; max-height: min(76svh, 900px);
-    object-fit: contain; object-position: left center;
-    background: var(--paper-2);
-  }
-  .hero__figure figcaption { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-top: 1px solid var(--ink); padding: 8px 0 0; min-height: 32px; }
-  .hero__side {
-    background: var(--accent); color: var(--ink);
-    display: flex; flex-direction: column; justify-content: space-between;
-    gap: 32px; padding: clamp(18px, 2.6vw, 40px);
-  }
-  .hero__side .label { color: var(--ink); }
-  .hero__side-top { display: flex; justify-content: space-between; align-items: start; }
-  .hero__side-top > span:last-child { font-size: clamp(32px, 5vw, 65px); line-height: .8; }
-  .hero__side p { font-size: clamp(19px, 1.8vw, 27px); font-weight: 660; line-height: 1.2; font-stretch: 86%; max-width: 420px; }
-  .hero__side nav { border-top: 2px solid var(--ink); }
-  .hero__side nav a {
-    display: flex; justify-content: space-between; align-items: baseline;
-    gap: 12px; padding: 11px 0;
-    border-bottom: 1px solid rgb(28 27 24 / .55);
-    text-decoration: none; font-weight: 720; font-size: 19px;
-  }
-  .hero__side nav a:hover { color: var(--ink); text-decoration: underline; }
-  @media (min-width: 1000px) {
-    .hero__composition { grid-template-columns: minmax(0, 2.55fr) minmax(265px, 1fr); }
-  }
-  @media (max-width: 999px) {
-    .hero__side { min-height: 215px; flex-direction: row; flex-wrap: wrap; align-items: end; }
-    .hero__side-top { width: 100%; }
-    .hero__side > div:last-child { width: 100%; }
-    .hero__side p { max-width: 560px; }
-  }
+  .intro-copy, .feature-copy { min-height: 0; display: flex; flex-direction: column; justify-content: space-between; padding: clamp(20px, 2.6vw, 44px); }
+  .intro-copy { background: var(--accent); color: var(--ink); }
+  .intro-copy .label { color: var(--ink); }
+  .intro-copy__top, .feature-copy__top { display: flex; justify-content: space-between; align-items: start; gap: 16px; }
+  .intro-copy__mark { font-size: clamp(34px, 4vw, 64px); line-height: .8; }
+  .intro-copy h1 { font-size: clamp(44px, 5.8vw, 86px); font-stretch: 72%; font-weight: 800; letter-spacing: -.058em; line-height: .92; margin: 0 0 clamp(20px, 4svh, 40px); }
+  .intro-copy h1 span { color: var(--paper); }
+  .intro-copy p { font-size: clamp(18px, 1.65vw, 23px); font-weight: 620; line-height: 1.23; max-width: 340px; margin: 0 0 clamp(24px, 4svh, 50px); }
+  .chapter-link { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border-top: 2px solid currentColor; padding: 12px 0 0; text-decoration: none; font-size: clamp(15px, 1.4vw, 19px); font-weight: 720; }
+  .chapter-link:hover { color: inherit; text-decoration: underline; }
 
-  /* Repeated editorial header motif makes the whole page feel designed, not just the hero. */
-  .selected { margin-bottom: clamp(72px, 9vw, 140px); }
-  .section-heading {
-    display: grid; grid-template-columns: minmax(0, 1fr);
-    margin-bottom: clamp(28px, 3.5vw, 48px);
-    border-top: 2px solid var(--ink);
-  }
-  .section-heading__marker {
-    display: flex; align-items: start; justify-content: space-between;
-    gap: 16px; background: var(--accent); color: var(--ink);
-    padding: 16px clamp(18px, 2.5vw, 36px);
-  }
-  .section-heading__marker .label { color: var(--ink); }
-  .section-heading__marker > span:last-child { font-size: 42px; line-height: .7; }
-  .section-heading__copy {
-    display: flex; align-items: baseline; justify-content: space-between;
-    flex-wrap: wrap; gap: 8px 22px;
-    padding: 18px clamp(18px, 2.5vw, 36px) 20px;
-    border-bottom: 1px solid var(--ink);
-  }
-  .section-heading h2 {
-    margin: 0; font-size: clamp(33px, 4.6vw, 68px);
-    font-weight: 780; font-stretch: 78%; letter-spacing: -.045em;
-  }
-  .selected__grid {
-    display: grid; grid-template-columns: minmax(0, 1fr);
-    gap: clamp(36px, 5vw, 72px) var(--gap);
-  }
-  .selected__links { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: flex-end; margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--rule); }
-  .selected__links a { font-weight: 700; text-decoration: none; }
-  .selected__links a:hover { text-decoration: underline; }
-  @media (min-width: 760px) {
-    .section-heading { grid-template-columns: minmax(155px, .34fr) minmax(0, 1.66fr); }
-    .section-heading__marker { padding-block: 24px; }
-    .selected__grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
-    .selected__grid > :global(:first-child) { grid-column: 1 / -1; width: min(100%, 1160px); }
-  }
+  /* The projects have their own layouts rather than one uncontrolled grid. */
+  .feature-copy { background: var(--paper-2); }
+  .feature-copy h2 { font-size: clamp(31px, 4.3vw, 66px); line-height: .96; font-stretch: 77%; letter-spacing: -.047em; margin: 0 0 22px; overflow-wrap: anywhere; }
+  .feature-copy p { font-size: clamp(17px, 1.6vw, 23px); line-height: 1.26; max-width: 390px; margin: 0 0 clamp(22px, 4svh, 46px); }
+  .feature-copy__index { font-size: clamp(42px, 6vw, 90px); line-height: .75; font-weight: 750; font-stretch: 70%; color: var(--accent-ink); }
+  .stage--inverse .feature-layout { grid-template-columns: minmax(250px, .85fr) minmax(0, 2.1fr); }
+  .stage--inverse .stage__figure { order: 2; }
+  .stage--inverse .feature-copy { order: 1; background: var(--ink); color: var(--paper); }
+  .stage--inverse .feature-copy .label { color: var(--paper); }
+  .stage--inverse .feature-copy__index { color: var(--accent); }
+  .stage--feature:not(.stage--inverse) .feature-copy { border-top: clamp(8px, 1.2vw, 18px) solid var(--accent); }
+  .stage--photo .feature-copy { background: var(--accent); border-top: 0 !important; }
+  .stage--photo .feature-copy .label { color: var(--ink); }
 
-  /* Same editorial header motif, quieter table. Neither section loses the design language. */
-  .index { container-type: inline-size; }
-  .section-heading--index .section-heading__marker { background: var(--ink); }
-  .section-heading--index .section-heading__marker .label,
-  .section-heading--index .section-heading__marker > span:last-child { color: var(--paper); }
-  .section-heading--index .section-heading__copy { border-bottom: 5px solid var(--accent); }
-  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-  th, td { text-align: left; vertical-align: top; padding: 9px 16px 9px 0; line-height: 24px; }
-  th { font-weight: 500; padding-block: 12px; line-height: 16px; box-shadow: inset 0 1px 0 var(--rule); }
-  td { box-shadow: inset 0 1px 0 var(--rule-soft); }
-  tbody tr:first-child td { box-shadow: inset 0 1px 0 var(--rule); }
-  tbody tr:last-child td { box-shadow: inset 0 1px 0 var(--rule-soft), 0 1px 0 var(--rule); }
-  th:nth-child(1) { width: 48px; }
-  th:nth-child(2) { width: 48%; }
-  .index__title { font-size: clamp(16px, 1.4vw, 20px); font-weight: 650; font-stretch: 88%; }
-  .index__title a { text-decoration: none; }
-  .index__title a:hover { text-decoration: underline; }
-  @media (max-width: 759px) {
-    td:nth-child(4), th:nth-child(4) { display: none; }
-    .hero__heading h1 { font-size: clamp(38px, 10vw, 72px); }
+  /* Five compact directory entries at most per screen, no variable-height list. */
+  .index-layout { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+  .index-heading { display: grid; grid-template-columns: minmax(175px, .5fr) minmax(0, 1.5fr); border-top: 2px solid var(--ink); }
+  .index-heading__label { display: flex; justify-content: space-between; align-items: start; gap: 10px; padding: clamp(16px, 2vw, 32px); background: var(--accent); }
+  .index-heading__label .label { color: var(--ink); }
+  .index-heading__label > span:last-child { font-size: clamp(30px, 4vw, 56px); line-height: .75; }
+  .index-heading__title { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; padding: clamp(16px, 2vw, 32px); border-bottom: 2px solid var(--ink); flex-wrap: wrap; }
+  .index-heading h2 { font-size: clamp(30px, 4.5vw, 67px); margin: 0; }
+  .index-list { padding: clamp(12px, 2svh, 25px) 0; margin: 0; display: grid; grid-template-rows: repeat(var(--entries, 5), minmax(0, 1fr)); list-style: none; min-height: 0; }
+  .index-list li { display: flex; align-items: center; min-height: 0; border-bottom: 1px solid var(--rule-soft); }
+  .index-list li:first-child { border-top: 1px solid var(--rule-soft); }
+  .index-list a { display: grid; grid-template-columns: 62px minmax(0, 1.2fr) minmax(0, .8fr) 20px; align-items: center; width: 100%; gap: 12px; padding: 8px 0; text-decoration: none; }
+  .index-list a:hover strong { color: var(--accent-ink); }
+  .index-list__number { font: 500 12px var(--font-mono); }
+  .index-list strong { font-size: clamp(19px, 2.4vw, 35px); line-height: 1.05; font-weight: 750; font-stretch: 80%; overflow-wrap: anywhere; }
+  .index-list__kind { font: 400 clamp(10px, .95vw, 13px)/1.3 var(--font-mono); color: var(--ink-2); }
+
+  .closing-layout { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; padding: clamp(20px, 3.5vw, 52px); background: var(--accent); }
+  .closing-layout .label { color: var(--ink); }
+  .closing-layout__top, .closing-layout__bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .closing-layout__links { align-content: center; display: grid; width: min(100%, 950px); margin-inline: auto; }
+  .closing-layout h2 { font-size: clamp(36px, 5vw, 70px); margin: 0 0 18px; }
+  .closing-layout__links a { display: flex; justify-content: space-between; gap: 12px; border-top: 2px solid var(--ink); padding: clamp(8px, 1.2svh, 15px) 0; font-size: clamp(24px, 3vw, 48px); font-weight: 770; font-stretch: 75%; line-height: 1.08; text-decoration: none; }
+  .closing-layout__links a:hover { color: var(--ink); text-decoration: underline; }
+  .closing-layout__links a:last-child { border-bottom: 2px solid var(--ink); }
+
+  /* Compress and rearrange compositions rather than letting a slide overflow. */
+  @media (max-width: 850px) {
+    .intro-layout, .feature-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1.5fr) minmax(0, .85fr); gap: 10px; }
+    .stage--inverse .feature-layout { grid-template-columns: minmax(0, 1fr); }
+    .stage--inverse .stage__figure, .stage--inverse .feature-copy { order: initial; }
+    .intro-copy, .feature-copy { padding: clamp(15px, 3vw, 28px); }
+    .intro-copy h1 { font-size: clamp(32px, 6.5vw, 58px); margin-bottom: 10px; }
+    .intro-copy h1 br { display: none; }
+    .intro-copy p { margin-bottom: 12px; }
+    .feature-copy h2 { font-size: clamp(26px, 5vw, 47px); margin-bottom: 8px; }
+    .feature-copy p { font-size: 16px; margin-bottom: 12px; }
+    .feature-copy__index { font-size: 40px; }
+    .chapter-link { padding-top: 8px; font-size: 15px; }
+    .index-heading { grid-template-columns: minmax(140px, .55fr) minmax(0, 1.45fr); }
+    .index-list a { grid-template-columns: 42px minmax(0, 1fr) 20px; }
+    .index-list__kind { display: none; }
   }
-  @media (min-width: 760px) {
-    th:nth-child(1) { width: 80px; }
-    th:nth-child(2) { width: 40%; }
-    th:nth-child(3) { width: 30%; }
+  @media (max-width: 520px) {
+    .stage { padding-top: 10px; }
+    .stage__foot { min-height: 35px; }
+    .intro-layout, .feature-layout { grid-template-rows: minmax(0, 1.55fr) minmax(0, .95fr); }
+    .intro-copy h1 { font-size: clamp(31px, 8vw, 42px); line-height: 1; margin-bottom: 10px; }
+    .intro-copy p { font-size: 16px; margin-bottom: 10px; }
+    .intro-copy__mark { font-size: 32px; }
+    .feature-copy__top .label { font-size: 10px; }
+    .feature-copy__index { font-size: 35px; }
+    .feature-copy h2 { font-size: 30px; margin-bottom: 7px; }
+    .feature-copy p { font-size: 14px; line-height: 1.22; margin-bottom: 10px; }
+    .chapter-link { font-size: 13px; }
+    .index-heading { grid-template-columns: 1fr; }
+    .index-heading__label { padding: 10px 14px; }
+    .index-heading__label > span:last-child { font-size: 26px; }
+    .index-heading__title { padding: 13px 14px; }
+    .index-heading h2 { font-size: 31px; }
+    .index-list strong { font-size: clamp(18px, 5.1vw, 23px); }
+    .index-list a { grid-template-columns: 32px minmax(0, 1fr) 18px; gap: 6px; }
+    .closing-layout { padding: 20px; }
+    .closing-layout__top .label:last-child { display: none; }
+    .closing-layout__links a { font-size: clamp(22px, 6vw, 31px); }
+  }
+  /* When browser content area is too short to show one whole composition,
+     preserve all content and allow normal scrolling instead of clipping. */
+  @media (max-height: 700px) {
+    .stage { height: auto; min-height: 700px; }
+    .intro-layout, .feature-layout { min-height: 510px; }
+    .index-layout { min-height: 510px; }
+    .closing-layout { min-height: 510px; }
   }
 </style>
