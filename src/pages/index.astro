@@ -211,6 +211,7 @@ const hero = site.hero.image;
   .feature-copy h2 { font-size: clamp(31px, 4.3vw, 66px); line-height: .96; font-stretch: 77%; letter-spacing: -.047em; margin: 0 0 22px; overflow-wrap: anywhere; }
   .feature-copy p { font-size: clamp(17px, 1.6vw, 23px); line-height: 1.26; max-width: 390px; margin: 0 0 clamp(22px, 4svh, 46px); }
   .feature-copy__index { font-size: clamp(42px, 6vw, 90px); line-height: .75; font-weight: 750; font-stretch: 70%; color: var(--accent-ink); }
+  .stage--inverse .feature-layout { grid-template-columns: minmax(250px, .85fr) minmax(0, 2.1fr); }
   .stage--inverse .stage__figure { order: 2; }
   .stage--inverse .feature-copy { order: 1; background: var(--ink); color: var(--paper); }
   .stage--inverse .feature-copy .label { color: var(--paper); }
@@ -248,6 +249,7 @@ const hero = site.hero.image;
   /* Compress and rearrange compositions rather than letting a slide overflow. */
   @media (max-width: 850px) {
     .intro-layout, .feature-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1.5fr) minmax(0, .85fr); gap: 10px; }
+    .stage--inverse .feature-layout { grid-template-columns: minmax(0, 1fr); }
     .stage--inverse .stage__figure, .stage--inverse .feature-copy { order: initial; }
     .intro-copy, .feature-copy { padding: clamp(15px, 3vw, 28px); }
     .intro-copy h1 { font-size: clamp(32px, 6.5vw, 58px); margin-bottom: 10px; }
