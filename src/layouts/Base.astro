@@ -37,23 +37,13 @@ const og = image ? await getImage({ src: image, width: 1200, format: 'jpg' }) : 
     <meta name="twitter:card" content={og ? 'summary_large_image' : 'summary'} />
   </head>
   <body class:list={{ quiet: compact }}>
-    <!-- Roughens .pen strokes: slight wobble (displacement) and uneven ink density (alpha noise). -->
-    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-      <filter id="pen" x="-5%" y="-5%" width="110%" height="110%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.008 0.012" numOctaves="2" seed="4" result="wobble" />
-        <feDisplacementMap in="SourceGraphic" in2="wobble" scale="2.6" xChannelSelector="R" yChannelSelector="G" result="drawn" />
-        <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="9" result="grain" />
-        <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -0.7 1.15" result="ink" />
-        <feComposite in="drawn" in2="ink" operator="in" />
-      </filter>
-    </svg>
     <a class="skip" href="#main">Skip to content</a>
     <TitleBlock compact={compact} sheet={sheet} />
     <main id="main">
       <slot />
     </main>
     <footer class="wrap">
-      <div class="foot pen">
+      <div class="foot rule">
         <span class="label">© {site.name}</span>
         <span class="label">{site.url.replace('https://', '')}</span>
         <a class="label" href="#main">Top ↑</a>
@@ -65,9 +55,9 @@ const og = image ? await getImage({ src: image, width: 1200, format: 'jpg' }) : 
 <style>
   main { padding-bottom: var(--space); }
   .foot {
-    --pen: 1.5px 0 0 0;
-    display: flex; justify-content: space-between; gap: 1rem;
-    padding-block: 0.8rem 1.75rem;
+    --rt: var(--w-div);
+    display: flex; justify-content: space-between; gap: 16px;
+    padding-block: 16px 40px;
   }
   .foot a { text-decoration: none; }
 </style>
