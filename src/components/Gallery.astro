@@ -123,16 +123,16 @@ const rows = toRows(items);
   .row--pair { align-items: start; }
   figure { margin: 0; min-width: 0; max-width: 100%; }
   figure a { display: block; cursor: zoom-in; }
-  .gallery__link img { display: block; max-width: 100%; height: auto; }
-  .row:not(.row--pair) img {
+  .gallery__link :global(img) { display: block; max-width: 100%; height: auto; }
+  .row:not(.row--pair) :global(img) {
     max-height: min(88svh, 1100px); width: auto; margin-inline: auto;
   }
   .row:not(.row--pair) figcaption { text-align: center; }
-  .row--pair img { width: 100%; height: auto; }
+  .row--pair :global(img) { width: 100%; height: auto; }
   figcaption { margin-top: 8px; }
   @media (max-width: 759px) {
     .row--pair { grid-template-columns: minmax(0, 1fr) !important; }
-    .row--pair img { width: auto; max-height: 85svh; margin-inline: auto; }
+    .row--pair :global(img) { width: auto; max-height: 85svh; margin-inline: auto; }
   }
 
   .viewer {
