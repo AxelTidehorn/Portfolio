@@ -23,15 +23,15 @@ const rows = [
 <Base title={title} description={summary} image={cover.src} sheet={`Projects / ${title}`}>
   <article class="wrap">
     <a class="label back" href="/projects/">← Projects</a>
-    <header class="block rule">
+    <header class="block">
       <div class="block__title">
         <h1>{title}</h1>
         <p>{summary}</p>
         {placeholder && <span class="badge">Placeholder</span>}
       </div>
       {rows.length > 0 && (
-        <dl class="block__meta rule">
-          {rows.map((r) => (<div class="rule rule--construction"><dt class="label">{r.label}</dt><dd>{r.value}</dd></div>))}
+        <dl class="block__meta">
+          {rows.map((r) => (<div><dt class="label">{r.label}</dt><dd>{r.value}</dd></div>))}
         </dl>
       )}
     </header>
@@ -58,27 +58,29 @@ const rows = [
 </Base>
 
 <style>
-  .back { display: block; width: fit-content; margin-bottom: 8px; text-decoration: none; }
-  /* Outline frame; title field and metadata field split on a major-grid coordinate. */
+  .back { display: block; width: fit-content; margin-bottom: 16px; text-decoration: none; }
+  /* Manual-inspired editorial project opener: a bold heading and factual metadata, not a drawing title block. */
   .block {
-    --rt: var(--w-outline); --rr: var(--w-outline); --rb: var(--w-outline); --rl: var(--w-outline);
-    display: grid; background: var(--paper); margin-bottom: 40px;
+    display: grid;
+    gap: 24px;
+    border-top: 3px solid var(--ink);
+    border-bottom: 1px solid var(--rule-soft);
+    padding: clamp(18px, 2.8vw, 36px) 0;
+    margin-bottom: 32px;
   }
-  .block__title { padding: 16px 16px 24px; }
-  .block__title p { color: var(--ink-2); max-width: 560px; margin-bottom: 8px; }
-  .block__meta { --rt: var(--w-div); margin: 0; display: grid; align-content: start; }
-  /* Metadata rows: 8 + 16 label + 24 value + 8 = 56px; construction-weight dividers between rows. */
-  .block__meta div { --rt: var(--w-div); padding: 8px 16px; }
-  .block__meta div:first-child { --rt: 0px; }
-  dd { margin: 0; font-weight: 560; }
+  .block__title p { font-size: clamp(17px, 1.8vw, 23px); line-height: 1.35; color: var(--ink-2); max-width: 700px; margin-bottom: 12px; }
+  .block__meta { margin: 0; display: grid; align-content: start; border-top: 1px solid var(--rule-soft); }
+  .block__meta div { display: grid; grid-template-columns: minmax(90px, 0.45fr) 1fr; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--rule-soft); }
+  dt { margin: 0; }
+  dd { margin: 0; font-weight: 620; line-height: 1.3; }
   @media (min-width: 900px) {
-    .block { grid-template-columns: round(down, 62%, 40px) 1fr; }
-    .block__meta { --rt: 0px; --rl: var(--w-div); }
+    .block { grid-template-columns: minmax(0, 1.6fr) minmax(240px, 0.8fr); gap: 48px; }
+    .block__meta { border-top: 0; }
   }
   .cover { margin: 0 0 40px; }
   .cover img { max-height: 85vh; width: auto; }
   .body { margin-bottom: 40px; }
   .links { list-style: none; padding: 0; margin: 0 0 40px; display: flex; flex-wrap: wrap; gap: 8px 24px; }
   .next { --rt: var(--w-div); display: flex; justify-content: space-between; align-items: baseline; margin-top: var(--space); padding-top: 16px; }
-  .next a { font-size: 20px; line-height: 24px; font-weight: 620; font-stretch: 85%; text-decoration: none; }
+  .next a { font-size: 20px; font-weight: 650; text-decoration: none; }
 </style>
