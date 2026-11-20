@@ -36,7 +36,7 @@ const og = image ? await getImage({ src: image, width: 1200, format: 'jpg' }) : 
     {og && <meta property="og:image" content={new URL(og.src, Astro.site)} />}
     <meta name="twitter:card" content={og ? 'summary_large_image' : 'summary'} />
   </head>
-  <body class:list={{ quiet: compact }}>
+  <body class:list={{ quiet: compact, 'homepage-presentation': sheet === 'Index' }}>
     <a class="skip" href="#main">Skip to content</a>
     <TitleBlock compact={compact} sheet={sheet} />
     <main id="main">
@@ -60,4 +60,25 @@ const og = image ? await getImage({ src: image, width: 1200, format: 'jpg' }) : 
     padding-block: 16px 40px;
   }
   .foot a { text-decoration: none; }
+
+  /* Home uses composed full-viewport chapters and an integrated final page.
+     Normal pages keep the regular document and footer. */
+  :global(body.homepage-presentation) {
+    --presentation-header-height: clamp(68px, 7svh, 84px);
+  }
+  :global(body.homepage-presentation) main { padding-bottom: 0; }
+  :global(body.homepage-presentation) > footer.wrap { display: none; }
+
+  @media (prefers-reduced-motion: no-preference) and (min-height: 621px) {
+    :global(html:has(body.homepage-presentation)) {
+      scroll-snap-type: y mandatory;
+      scroll-padding-top: var(--presentation-header-height);
+    }
+  }
+  @media (prefers-reduced-motion: reduce), (max-height: 620px) {
+    :global(html:has(body.homepage-presentation)) {
+      scroll-snap-type: none;
+      scroll-behavior: auto;
+    }
+  }
 </style>
