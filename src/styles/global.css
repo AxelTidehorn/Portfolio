@@ -68,9 +68,15 @@ code { font-family: var(--font-mono); font-size: 0.875em; }
 .prose img { margin: 24px 0; }
 .prose h2 { margin-top: 40px; font-size: clamp(25px, 2.4vw, 34px); }
 
+/* Independent line weights prevent nested rules from inheriting their parent's borders. */
+@property --rt { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --rr { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --rb { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --rl { syntax: '<length>'; inherits: false; initial-value: 0px; }
 /* Crisp editorial rules; supports existing section and metadata components. */
 .rule { position: relative; }
 .rule::after {
+  --rt: inherit; --rr: inherit; --rb: inherit; --rl: inherit;
   content: '';
   position: absolute;
   inset: 0;
