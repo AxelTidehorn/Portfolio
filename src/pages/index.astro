@@ -18,45 +18,61 @@ const pad = (n: number) => String(n).padStart(2, '0');
 const hero = site.hero.image;
 ---
 <Base image={hero} sheet="Index">
-  <section class="hero wrap">
-    <figure class="hero__fig snap" style={`--r: ${hero.height / hero.width}; --snap-max: 78vh`}>
-      <div>
-        <span class="hero__img">
-          <Image
-            src={hero}
-            alt={site.hero.alt}
-            widths={[800, 1200, 1800, 2400, 3000]}
-            sizes="(min-width: 1100px) 70vw, 100vw"
-            quality={86}
-            loading="eager"
-            fetchpriority="high"
-          />
-        </span>
-      </div>
-    </figure>
-    <aside class="hero__side">
-      <div class="hero__fighead rule">
-        <span class="label">Fig. 01</span>
+  <section class="opening wrap" aria-labelledby="opening-title">
+    <div class="opening__eyebrow">
+      <span class="label">Independent practice / Sweden</span>
+      <span class="label">Photography · Objects · Experiments</span>
+    </div>
+    <h1 id="opening-title" class="opening__title">
+      <span>Seeing</span>
+      <span class="opening__second">making<span class="opening__dot">.</span></span>
+    </h1>
+    <div class="opening__bottom">
+      <p>Photography, design and the pleasure of figuring things out.</p>
+      <span class="opening__edition label">AT / Selected practice</span>
+    </div>
+  </section>
+
+  <section class="hero wrap" aria-label="Featured photography">
+    <figure class="hero__fig">
+      <Image
+        src={hero}
+        alt={site.hero.alt}
+        widths={[800, 1200, 1800, 2400, 3000]}
+        sizes="(min-width: 1100px) 72vw, 100vw"
+        quality={86}
+        loading="eager"
+        fetchpriority="high"
+      />
+      <figcaption class="hero__caption">
+        <span class="label">01 / Featured photograph</span>
         {site.hero.placeholder && <span class="badge">Placeholder</span>}
+      </figcaption>
+    </figure>
+    <aside class="hero__panel">
+      <div class="hero__panel-top">
+        <span class="label">AT / 001</span>
+        <span class="hero__glyph" aria-hidden="true">↗</span>
       </div>
-      <p class="intro">{site.intro}</p>
-      <ul class="jump">
-        {site.nav.slice(0, 2).map((n) => (
-          <li class="rule">
-            <a href={n.href}>
-              <span class="label">{n.code}</span>
-              <span class="jump__name">{n.label}</span>
-              <span class="label">{pad(counts[n.href as keyof typeof counts])} →</span>
-            </a>
-          </li>
-        ))}
-      </ul>
+      <div class="hero__panel-bottom">
+        <p>{site.intro}</p>
+        <ul class="hero__links">
+          {site.nav.slice(0, 2).map((n) => (
+            <li>
+              <a href={n.href}>
+                <span>{n.label}</span>
+                <span class="hero__link-count">{pad(counts[n.href as keyof typeof counts])} ↗</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </aside>
   </section>
 
   <section class="selected wrap" aria-labelledby="sel">
     <header class="sec-head rule">
-      <span class="label">01 / Portfolio</span>
+      <span class="label">02 / Selection</span>
       <h2 id="sel">Selected work</h2>
       <span class="label">{pad(selected.length)} items</span>
     </header>
@@ -78,7 +94,7 @@ const hero = site.hero.image;
 
   <section class="index wrap" aria-labelledby="idx">
     <header class="sec-head rule">
-      <span class="label">02 / Index</span>
+      <span class="label">03 / Index</span>
       <h2 id="idx">Index of work</h2>
     </header>
     <table>
@@ -100,43 +116,70 @@ const hero = site.hero.image;
 </Base>
 
 <style>
-  .hero { display: grid; gap: 24px; margin-bottom: var(--space); }
-  .hero__fig { margin: 0; }
-  .hero__img { position: relative; display: inline-block; vertical-align: top; max-width: 100%; }
-  .hero__img img { max-height: 78vh; width: auto; }
+  /* Poster-like first impression: one monumental typographic move, then the photograph. */
+  .opening { margin-bottom: clamp(18px, 2.5vw, 36px); }
+  .opening__eyebrow { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-bottom: 14px; border-bottom: 1px solid var(--rule-soft); }
+  .opening__title {
+    font-weight: 850;
+    font-stretch: 65%;
+    font-size: clamp(78px, 13.7vw, 225px);
+    line-height: 0.78;
+    letter-spacing: -0.065em;
+    text-transform: uppercase;
+    margin: 20px 0 24px;
+  }
+  .opening__title > span { display: block; }
+  .opening__second { padding-left: clamp(8px, 8vw, 142px); }
+  .opening__dot { color: var(--accent); }
+  .opening__bottom {
+    display: flex; align-items: end; justify-content: space-between;
+    gap: 20px; border-top: 2px solid var(--ink); padding-top: 13px;
+  }
+  .opening__bottom p { max-width: 440px; margin: 0; font-size: clamp(18px, 2vw, 26px); line-height: 1.2; font-weight: 550; font-stretch: 86%; }
+  .opening__edition { text-align: right; }
 
-  .hero__side { display: flex; flex-direction: column; }
-  .hero__fighead { --rt: var(--w-outline); display: flex; justify-content: space-between; align-items: center; padding-top: 8px; }
-  .intro {
-    font-size: 24px; line-height: 32px;
-    font-weight: 460; font-stretch: 88%; letter-spacing: -0.012em;
-    margin: 16px 0 24px; max-width: 400px;
+  .hero {
+    display: grid;
+    gap: 0;
+    margin-bottom: calc(var(--space) * 1.2);
+    align-items: stretch;
   }
-  .jump { list-style: none; margin: 0; padding: 0; }
-  .jump li { --rt: var(--w-div); }
-  .jump li:last-child { --rb: var(--w-div); }
-  .jump a { display: grid; grid-template-columns: 40px 1fr auto; align-items: baseline; padding: 8px 0; text-decoration: none; }
-  .jump__name { font-size: 20px; line-height: 24px; font-weight: 620; font-stretch: 85%; }
-  @media (min-width: 1100px) {
-    .hero { grid-template-columns: minmax(0, 1fr) 320px; gap: var(--gap); align-items: stretch; }
-    .intro { font-size: 28px; }
-    .jump { margin-top: auto; }
+  .hero__fig { min-width: 0; margin: 0; display: flex; flex-direction: column; }
+  .hero__fig img { width: 100%; height: auto; max-height: min(68vw, 760px); object-fit: contain; object-position: left top; }
+  .hero__caption { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; border-top: 1px solid var(--rule); padding: 8px 0; }
+  .hero__panel {
+    background: var(--accent);
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(18px, 2.6vw, 40px);
+    min-width: 0;
   }
+  .hero__panel .label { color: var(--ink); }
+  .hero__panel-top { display: flex; justify-content: space-between; align-items: start; }
+  .hero__glyph { font-size: clamp(68px, 9vw, 148px); font-weight: 350; line-height: 0.72; }
+  .hero__panel-bottom p { font-size: clamp(22px, 2.3vw, 35px); font-weight: 730; font-stretch: 78%; line-height: 1.08; letter-spacing: -0.03em; margin: 40px 0; }
+  .hero__links { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
+  .hero__links li { border-bottom: 1px solid rgb(28 27 24 / 0.5); }
+  .hero__links a {
+    display: flex; justify-content: space-between; gap: 12px; padding: 12px 0;
+    text-decoration: none; font-size: clamp(18px, 1.5vw, 22px); font-weight: 700; font-stretch: 78%;
+  }
+  .hero__links a:hover { color: var(--ink); text-decoration: underline; }
+  .hero__link-count { font: 500 13px/1.4 var(--font-mono); white-space: nowrap; }
 
   .selected { margin-bottom: var(--space); }
-  .selected__grid {
-    display: grid;
-    gap: clamp(28px, 3vw, 48px) var(--gap);
-  }
+  .selected .sec-head { --rt: 3px; gap: 20px; padding-top: 18px; margin-bottom: 24px; }
+  .selected .sec-head h2 { font-size: clamp(46px, 7.7vw, 118px); font-weight: 820; font-stretch: 68%; letter-spacing: -0.055em; }
+  .selected__grid { display: grid; gap: clamp(28px, 3vw, 48px) var(--gap); }
+  .selected__grid > :global(:first-child) { grid-column: 1 / -1; }
   @media (min-width: 760px) {
-    .selected__grid { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); }
+    .selected__grid { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
+    .selected__grid > :global(:first-child) { width: min(82%, 1180px); }
   }
-
-  /* Rows are exactly 40px; lines are inset shadows on each cell's top edge (no layout shift). */
-  /* Table columns use cqw: percentages inside round() are ignored by the table layout algorithm. */
   .index { container-type: inline-size; }
   table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-  /* Top-aligned 24px lines: baseline alignment between mono and sans cells would grow rows past 40px. */
   th, td { text-align: left; vertical-align: top; padding: 8px 16px 8px 0; line-height: 24px; }
   th { font-weight: 500; padding-block: 12px; line-height: 16px; box-shadow: inset 0 1px 0 var(--rule); }
   td { box-shadow: inset 0 1px 0 var(--rule-soft); }
@@ -151,5 +194,22 @@ const hero = site.hero.image;
     th:nth-child(1) { width: 80px; }
     th:nth-child(2) { width: 40%; }
     th:nth-child(3) { width: 30%; }
+  }
+  @media (min-width: 1100px) {
+    .hero { grid-template-columns: minmax(0, 2.15fr) minmax(280px, 0.85fr); }
+  }
+  @media (max-width: 1099px) {
+    .hero__panel { min-height: 280px; }
+    .hero__panel-bottom p { margin: 16px 0 24px; max-width: 640px; }
+    .hero__glyph { font-size: 76px; }
+  }
+  @media (max-width: 600px) {
+    .opening__title { font-size: clamp(53px, 14vw, 84px); margin: 18px 0; letter-spacing: -0.06em; }
+    .opening__second { padding-left: 4vw; }
+    .opening__bottom { align-items: start; }
+    .opening__bottom p { font-size: 17px; max-width: 240px; }
+    .hero__panel { min-height: 300px; }
+    .selected .sec-head { flex-wrap: wrap; gap: 8px 14px; }
+    .selected .sec-head h2 { order: 2; flex-basis: 100%; }
   }
 </style>
