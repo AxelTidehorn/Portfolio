@@ -1,0 +1,76 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Photography gear" description="Cameras, lenses and film tools used by Axel Tidehorn." sheet="Gear">
+  <div class="wrap gear">
+    <header class="gear__head">
+      <span class="label">Photography / Equipment</span>
+      <h1>Tools of the trade.</h1>
+      <p>Digital and analogue cameras, favourite lenses, and a few tools for working with film. This is a snapshot of the equipment I have, not a list of everything I use for every photograph.</p>
+    </header>
+
+    <div class="gear__sections">
+      <section aria-labelledby="digital">
+        <div class="gear__section-head"><span class="label">01</span><h2 id="digital">Digital</h2></div>
+        <ul>
+          <li><strong>Fujifilm X-Pro3</strong><span>Main digital camera</span></li>
+          <li><strong>Fujinon XF 35mm f/2 R WR</strong><span>Compact everyday prime</span></li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="film">
+        <div class="gear__section-head"><span class="label">02</span><h2 id="film">Film cameras</h2></div>
+        <ul>
+          <li><strong>Olympus XA</strong><span>35 mm compact</span></li>
+          <li><strong>Nikon F80</strong><span>35 mm SLR</span></li>
+          <li><strong>Canon AE-1</strong><span>35 mm SLR</span></li>
+          <li><strong>Minolta X-700</strong><span>Repair project</span></li>
+          <li><strong>Zeiss Ikon Nettax</strong><span>120 film</span></li>
+          <li><strong>FED 3</strong><span>35 mm rangefinder</span></li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="optics">
+        <div class="gear__section-head"><span class="label">03</span><h2 id="optics">Selected lenses</h2></div>
+        <ul>
+          <li><strong>AF Micro-Nikkor 60mm f/2.8 D</strong><span>Macro and film work</span></li>
+          <li><strong>Canon FDn 50mm f/1.8</strong><span>Manual focus</span></li>
+          <li><strong>Helios 44-2</strong><span>M42</span></li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="darkroom">
+        <div class="gear__section-head"><span class="label">04</span><h2 id="darkroom">Film workflow</h2></div>
+        <ul>
+          <li><strong>Plustek OpticFilm 8100</strong><span>35 mm scanner</span></li>
+          <li><strong>Lomography Digitaliza</strong><span>Film holder</span></li>
+          <li><strong>Paterson developing tank</strong><span>Film processing</span></li>
+          <li><strong>Rodinal</strong><span>Black-and-white developer</span></li>
+          <li><strong>FILMLABB</strong><span><a href="/projects/filmlabb/">My negative-conversion software ↗</a></span></li>
+        </ul>
+      </section>
+    </div>
+    <p class="gear__note">The equipment changes over time. The work matters more than the kit.</p>
+    <a class="gear__back" href="/photography/">← Back to photography</a>
+  </div>
+</Base>
+<style>
+  .gear__head { max-width: 780px; padding-bottom: 30px; }
+  .gear__head h1 { margin: 12px 0 18px; }
+  .gear__head p { font-size: clamp(18px, 2vw, 24px); color: var(--ink-2); line-height: 1.35; max-width: 680px; }
+  .gear__sections { border-top: 3px solid var(--rule); }
+  .gear__sections section { border-bottom: 1px solid var(--rule); padding: 22px 0 30px; }
+  .gear__section-head { display: flex; align-items: baseline; gap: 18px; }
+  .gear__section-head h2 { margin: 0 0 15px; font-size: clamp(25px, 3vw, 39px); }
+  .gear ul { padding: 0; margin: 0; list-style: none; }
+  .gear li { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--rule-soft); }
+  .gear li strong { font-weight: 620; }
+  .gear li span { color: var(--ink-2); }
+  .gear__note { color: var(--ink-2); margin: 30px 0 16px; }
+  .gear__back { display: inline-block; margin-bottom: 20px; }
+  @media (min-width: 900px) {
+    .gear__sections section { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr); gap: var(--gap); }
+    .gear__section-head h2 { margin-bottom: 0; }
+  }
+  @media (max-width: 520px) { .gear li { grid-template-columns: 1fr; gap: 1px; } .gear li span { font-size: 14px; } }
+</style>
