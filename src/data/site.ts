@@ -20,7 +20,7 @@ export const site = {
   },
   // PLACEHOLDER copy — replace with your own words.
   intro:
-    'Photography first. Alongside it: product design, mechanical engineering, software and experiments — documented as they develop.',
+    'Photography first, alongside product design, mechanical engineering, software and experiments in progress.',
   // Leave empty until verified contact details exist; the About page shows a placeholder instead.
   contact: [] as { label: string; href: string }[],
 };
