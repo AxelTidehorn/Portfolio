@@ -19,7 +19,7 @@ import { site } from '../data/site';
 </Base>
 
 <style>
-  .grid { display: grid; gap: 1rem 3rem; }
-  @media (min-width: 900px) { .grid { grid-template-columns: 1fr 2fr; } }
-  .badge { margin-bottom: 1rem; }
+  .grid { display: grid; gap: 16px var(--gap); }
+  @media (min-width: 900px) { .grid { grid-template-columns: round(down, (100% - 40px) / 3, 40px) 1fr; } }
+  .badge { margin-bottom: 16px; }
 </style>

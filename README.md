@@ -86,10 +86,31 @@ Search for `placeholder: true` and `PLACEHOLDER` in `src/`. Files to finish:
 
 ## Visual system
 
-- **Type:** Archivo (variable weight + width; headings run condensed) and IBM Plex Mono for labels/metadata. Both are self-hosted via `@fontsource` packages, imported at the top of `global.css`.
-- **Paper:** overview pages have a faint drafting grid and a slight copy-burn at the viewport edges (`body` and `body::before` in `global.css`). Gallery pages (`compact` layout) get plain paper via `body.quiet`.
-- **Pen rules:** add `class="pen"` to an element and set `--pen` to border widths (e.g. `--pen: 2px 0 0 0` for a top rule). The line is drawn on a pseudo-element and roughened by the `#pen` SVG filter in `Base.astro` (wobble + ink density). Tune the filter there; text and images are never filtered.
-- **Document surface:** `class="sheet"` adds faint fibre and edge tone to supporting surfaces (title blocks, metadata tables). Never on photographs.
+- **Type:** Archivo (variable weight + width; headings run condensed) and IBM Plex Mono for labels/metadata, self-hosted via `@fontsource` (imported at the top of `global.css`).
+- **Paper:** light, warm `#F3F0E8` with a faint drafting grid on overview pages. Gallery pages (`compact` layout) get plain paper via `body.quiet` — no grid, no effects near photographs.
+- **Line weights:** outline (`--w-outline`, 2px) for frames and section heads; division (`--w-div`, 1px) for cells and dividers; construction (`.rule--construction`, light ink) for rows and sub-fields. Lines are perfectly straight; the only "hand" quality is a barely visible ink-density drift along each line (an opacity mask, no displacement).
+
+## Layout grid
+
+The background grid is the layout system, not decoration. Module **8px**, major **40px**.
+
+**Horizontal.** The grid is centred on the page: a major line always runs through the page centre (`background-position: calc(50% + tile/2)`). Containers (`.wrap`) are centred and their width is rounded with CSS `round()`:
+
+- ≥ 760px: width = multiple of **80px** → each edge is a whole number of 40px cells from the centre, i.e. on a **major** line.
+- < 760px: width = multiple of **16px** → edges on **minor** (8px) lines. Rounding to 80px on a phone would waste up to 79px of width.
+
+Inside a container, columns are either fixed multiples of 40px or proportional widths rounded down to 40px (`round(down, (100% - gap) * 0.58, 40px)`), with the last column taking the remainder — which is then also a whole number of cells. Gaps are 40px. So title-block cells, hero/side columns, card columns, table columns and metadata fields all start on grid lines at every width. (Table columns use `cqw` units because table layout ignores percentages inside `round()`.)
+
+**Vertical.** Measured from the top of the page. Line heights (body 24px, labels 16px, headings `round(up, 1em, 8px)`), margins, paddings and fixed heights (title-block rows 72/48px, table rows 40px, metadata rows 56px) are multiples of 8px. Image boxes are rounded **up** to 8px (`.snap`, using container-query units and the image ratio as `--r`); the image itself keeps its aspect ratio and any remainder is empty paper below it. Photographs are never cropped or resized to the grid.
+
+**Lines** are drawn with `.rule` (set `--rt/--rr/--rb/--rl`): a pseudo-element, not borders, so lines never push content off the module. Top/left lines sit on the box's own coordinate, right/bottom lines just outside it, so every line covers exactly the pixel of the grid line it belongs to. The width variables are registered as non-inherited (`@property`) so nested boxes don't repeat a parent's frame.
+
+**Limitations**
+
+- Vertical alignment is guaranteed to the 8px module, not to 40px major lines: section starts depend on content height.
+- Images inside Markdown body text are not snapped (CSS can't read their ratio), so content after an inline image can be off the 8px module by up to 7px. Use `gallery` or the cover for exact alignment.
+- Requires CSS `round()`, container queries and `@property` (Safari/iOS 16.4+, Chrome 125+, Firefox 128+). Older browsers fall back to an unsnapped but fully working layout.
+- On odd viewport widths the page centre is a half pixel; grid and edges round the same way in Chromium, other engines may differ by 1px.
 
 ## Deploying to Cloudflare Pages
 

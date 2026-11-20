@@ -29,7 +29,11 @@ const rows = toRows(items);
     >
       {row.map((img) => (
         <figure>
-          <a href={img.full} data-index={img.index} data-full={img.full} data-caption={img.caption ?? ''}>
+          <a
+            class="snap"
+            style={`--r: ${img.src.height / img.src.width}${row.length === 1 ? '; --snap-max: 88vh' : ''}`}
+            href={img.full} data-index={img.index} data-full={img.full} data-caption={img.caption ?? ''}
+          ><div>
             <Image
               src={img.src}
               alt={img.alt}
@@ -38,7 +42,7 @@ const rows = toRows(items);
               quality={85}
               loading={img.index < 2 ? 'eager' : 'lazy'}
             />
-          </a>
+          </div></a>
           {img.caption && <figcaption class="label">{img.caption}</figcaption>}
         </figure>
       ))}
@@ -114,14 +118,17 @@ const rows = toRows(items);
 </script>
 
 <style>
-  .gallery { display: grid; gap: clamp(1.5rem, 5vw, 5rem); }
-  .row { display: grid; gap: clamp(1rem, 2.5vw, 2rem); justify-items: center; }
+  /* Image boxes are rounded up to 8px (.snap) so the page below stays on the module. */
+  .gallery { display: grid; gap: var(--space); }
+  .row { display: grid; gap: var(--gap); }
   .row--pair { align-items: start; }
   @media (max-width: 759px) { .row--pair { grid-template-columns: 1fr !important; } }
   figure { margin: 0; max-width: 100%; }
   figure a { display: block; cursor: zoom-in; }
-  .row:not(.row--pair) img { max-height: 88vh; width: auto; }
-  figcaption { margin-top: 0.6rem; }
+  .row:not(.row--pair) img { max-height: 88vh; width: auto; margin-inline: auto; }
+  .row:not(.row--pair) figcaption { text-align: center; }
+  .row--pair img { width: 100%; }
+  figcaption { margin-top: 8px; }
 
   .viewer {
     width: 100vw; height: 100dvh; max-width: none; max-height: none;

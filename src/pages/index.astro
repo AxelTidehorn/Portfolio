@@ -17,29 +17,34 @@ const counts = {
   '/projects/': all.filter((w) => w.kind !== 'Photography').length,
 };
 const pad = (n: number) => String(n).padStart(2, '0');
+const hero = site.hero.image;
 ---
-<Base image={site.hero.image} sheet="Index">
+<Base image={hero} sheet="Index">
   <section class="hero wrap">
-    <figure class="hero__fig">
-      <Image
-        src={site.hero.image}
-        alt={site.hero.alt}
-        widths={[800, 1200, 1800, 2400, 3000]}
-        sizes="(min-width: 1100px) 70vw, 100vw"
-        quality={86}
-        loading="eager"
-        fetchpriority="high"
-      />
+    <figure class="hero__fig snap" style={`--r: ${hero.height / hero.width}; --snap-max: 78vh`}>
+      <div>
+        <span class="hero__img">
+          <Image
+            src={hero}
+            alt={site.hero.alt}
+            widths={[800, 1200, 1800, 2400, 3000]}
+            sizes="(min-width: 1100px) 70vw, 100vw"
+            quality={86}
+            loading="eager"
+            fetchpriority="high"
+          />
+        </span>
+      </div>
     </figure>
     <aside class="hero__side">
-      <div class="hero__fighead pen">
+      <div class="hero__fighead rule">
         <span class="label">Fig. 01</span>
         {site.hero.placeholder && <span class="badge">Placeholder</span>}
       </div>
       <p class="intro">{site.intro}</p>
       <ul class="jump">
         {site.nav.slice(0, 2).map((n) => (
-          <li class="pen">
+          <li class="rule">
             <a href={n.href}>
               <span class="label">{n.code}</span>
               <span class="jump__name">{n.label}</span>
@@ -52,7 +57,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
   </section>
 
   <section class="selected wrap" aria-labelledby="sel">
-    <header class="sec-head pen">
+    <header class="sec-head rule">
       <span class="label">§ 01</span>
       <h2 id="sel">Selected work</h2>
       <span class="label">{pad(selected.length)} items</span>
@@ -74,11 +79,11 @@ const pad = (n: number) => String(n).padStart(2, '0');
   </section>
 
   <section class="index wrap" aria-labelledby="idx">
-    <header class="sec-head pen">
+    <header class="sec-head rule">
       <span class="label">§ 02</span>
       <h2 id="idx">Index of work</h2>
     </header>
-    <table class="sheet">
+    <table>
       <thead>
         <tr><th scope="col" class="label">No.</th><th scope="col" class="label">Title</th><th scope="col" class="label">Type</th><th scope="col" class="label">Status</th></tr>
       </thead>
@@ -97,50 +102,63 @@ const pad = (n: number) => String(n).padStart(2, '0');
 </Base>
 
 <style>
-  .hero { display: grid; gap: 1.25rem; margin-bottom: var(--space); }
-  /* Crop marks sit outside the photograph's corners, never on it. */
-  .hero__fig { margin: 0; position: relative; width: fit-content; max-width: 100%; }
-  .hero__fig::before, .hero__fig::after {
-    content: ''; position: absolute; width: 14px; height: 14px; border: 0 solid var(--rule);
-    filter: url(#pen);
+  .hero { display: grid; gap: 24px; margin-bottom: var(--space); }
+  .hero__fig { margin: 0; }
+  .hero__img { position: relative; display: inline-block; vertical-align: top; max-width: 100%; }
+  .hero__img img { max-height: 78vh; width: auto; }
+  /* Crop marks one module outside the photograph's corners, never on it. */
+  .hero__img::before, .hero__img::after {
+    content: ''; position: absolute; width: 16px; height: 16px; border: 0 solid var(--rule);
   }
-  .hero__fig::before { top: -9px; left: -9px; border-width: 1px 0 0 1px; }
-  .hero__fig::after { bottom: -9px; right: -9px; border-width: 0 1px 1px 0; }
-  .hero__fig img { max-height: 78vh; width: auto; }
+  .hero__img::before { top: -8px; left: -8px; border-width: 1px 0 0 1px; }
+  .hero__img::after { bottom: -9px; right: -9px; border-width: 0 1px 1px 0; }
 
   .hero__side { display: flex; flex-direction: column; }
-  .hero__fighead { --pen: 2px 0 0 0; display: flex; justify-content: space-between; align-items: center; padding-top: 0.6rem; }
+  .hero__fighead { --rt: var(--w-outline); display: flex; justify-content: space-between; align-items: center; padding-top: 8px; }
   .intro {
-    font-size: clamp(1.35rem, 2.1vw, 1.8rem);
-    font-weight: 460; font-stretch: 88%;
-    line-height: 1.18; letter-spacing: -0.012em;
-    margin: 1rem 0 1.5rem; max-width: 26rem;
+    font-size: 24px; line-height: 32px;
+    font-weight: 460; font-stretch: 88%; letter-spacing: -0.012em;
+    margin: 16px 0 24px; max-width: 400px;
   }
   .jump { list-style: none; margin: 0; padding: 0; }
-  .jump li { --pen: 1px 0 0 0; }
-  .jump li:last-child { --pen: 1px 0 1px 0; }
-  .jump a { display: grid; grid-template-columns: 2rem 1fr auto; align-items: baseline; padding: 0.55rem 0; text-decoration: none; }
-  .jump__name { font-size: 1.3rem; font-weight: 620; font-stretch: 85%; }
+  .jump li { --rt: var(--w-div); }
+  .jump li:last-child { --rb: var(--w-div); }
+  .jump a { display: grid; grid-template-columns: 40px 1fr auto; align-items: baseline; padding: 8px 0; text-decoration: none; }
+  .jump__name { font-size: 20px; line-height: 24px; font-weight: 620; font-stretch: 85%; }
   @media (min-width: 1100px) {
-    .hero { grid-template-columns: minmax(0, 1fr) 19rem; gap: 2rem; align-items: stretch; }
+    .hero { grid-template-columns: minmax(0, 1fr) 320px; gap: var(--gap); align-items: stretch; }
+    .intro { font-size: 28px; }
     .jump { margin-top: auto; }
   }
 
   .selected { margin-bottom: var(--space); }
-  .selected__grid { display: grid; gap: 2rem 1.25rem; }
+  .selected__grid { display: flex; flex-wrap: wrap; gap: var(--gap); align-items: flex-start; }
+  .selected__grid > :global(*) { width: 100%; }
   @media (min-width: 760px) {
-    /* Asymmetric rhythm: alternating 7/5 and 5/7 columns. */
-    .selected__grid { grid-template-columns: repeat(12, 1fr); align-items: start; }
-    .selected__grid > :global(*) { grid-column: span 5; }
+    /* Alternating wide/narrow columns. Wide = 58% rounded down to the major grid; narrow = the rest. */
+    .selected__grid > :global(*) { width: calc(100% - var(--gap) - round(down, (100% - var(--gap)) * 0.58, 40px)); }
     .selected__grid > :global(:nth-child(4n + 1)),
-    .selected__grid > :global(:nth-child(4n + 4)) { grid-column: span 7; }
+    .selected__grid > :global(:nth-child(4n + 4)) { width: round(down, (100% - var(--gap)) * 0.58, 40px); }
   }
 
-  table { width: 100%; border-collapse: collapse; }
-  th { text-align: left; font-weight: 500; padding: 0.5rem 0.75rem 0.45rem 0; border-bottom: 1.5px solid var(--rule); }
-  td { padding: 0.55rem 0.75rem 0.55rem 0; vertical-align: baseline; border-bottom: 1px solid var(--rule-soft); }
-  td:first-child, th:first-child { width: 3.5rem; padding-left: 0.5rem; }
-  .index__title { font-size: 1.15rem; font-weight: 600; font-stretch: 88%; }
+  /* Rows are exactly 40px; lines are inset shadows on each cell's top edge (no layout shift). */
+  /* Table columns use cqw: percentages inside round() are ignored by the table layout algorithm. */
+  .index { container-type: inline-size; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  /* Top-aligned 24px lines: baseline alignment between mono and sans cells would grow rows past 40px. */
+  th, td { text-align: left; vertical-align: top; padding: 8px 16px 8px 0; line-height: 24px; }
+  th { font-weight: 500; padding-block: 12px; line-height: 16px; box-shadow: inset 0 1px 0 var(--rule); }
+  td { box-shadow: inset 0 1px 0 var(--rule-soft); }
+  tbody tr:first-child td { box-shadow: inset 0 1px 0 var(--rule); }
+  tbody tr:last-child td { box-shadow: inset 0 1px 0 var(--rule-soft), 0 1px 0 var(--rule); }
+  th:nth-child(1) { width: 48px; }
+  th:nth-child(2) { width: round(down, (100cqw - 48px) * 0.5, 8px); }
+  .index__title { font-size: 18px; font-weight: 600; font-stretch: 88%; }
   .index__title a { text-decoration: none; }
-  @media (max-width: 599px) { td:nth-child(4), th:nth-child(4) { display: none; } }
+  @media (max-width: 759px) { td:nth-child(4), th:nth-child(4) { display: none; } }
+  @media (min-width: 760px) {
+    th:nth-child(1) { width: 80px; }
+    th:nth-child(2) { width: round(down, (100cqw - 80px) * 0.4, 40px); }
+    th:nth-child(3) { width: round(down, (100cqw - 80px) * 0.35, 40px); }
+  }
 </style>
