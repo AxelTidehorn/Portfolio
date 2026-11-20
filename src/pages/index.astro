@@ -43,7 +43,7 @@ const hero = site.hero.image;
       <div class="intro-copy">
         <div class="intro-copy__top">
           <span class="label">Independent practice / Sweden</span>
-          <span class="intro-copy__mark" aria-hidden="true">↗</span>
+          <span class="intro-copy__mark" aria-hidden="true">↗︎</span>
         </div>
         <div class="intro-copy__bottom">
           <h1 id="home-title">Axel<br />Tidehorn<span>.</span></h1>
@@ -288,12 +288,69 @@ const hero = site.hero.image;
     .closing-layout__top .label:last-child { display: none; }
     .closing-layout__links a { font-size: clamp(22px, 6vw, 31px); }
   }
-  /* When browser content area is too short to show one whole composition,
-     preserve all content and allow normal scrolling instead of clipping. */
-  @media (max-height: 700px) {
-    .stage { height: auto; min-height: 700px; }
-    .intro-layout, .feature-layout { min-height: 510px; }
-    .index-layout { min-height: 510px; }
-    .closing-layout { min-height: 510px; }
+  /*
+   * Small-screen art direction: a photograph at its real aspect ratio and a
+   * compact, legible information panel. Do not stretch a 3:2 photograph into
+   * a tall empty box or hide the panel beyond the viewport.
+   */
+  @media (max-width: 600px) {
+    .stage { padding-top: 6px; padding-bottom: 4px; }
+    .stage__layout { overflow: visible; }
+    .intro-layout, .feature-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 8px;
+    }
+    .stage__figure {
+      display: grid;
+      grid-template-rows: auto auto;
+      min-height: 0;
+      height: fit-content;
+      align-self: start;
+    }
+    .stage__image {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 0;
+      overflow: hidden;
+      background: transparent;
+    }
+    .stage__image img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: min(39dvh, 360px);
+      object-fit: contain;
+      object-position: left top;
+    }
+    .image-caption { min-height: 25px; padding: 4px 0; }
+    .intro-copy, .feature-copy {
+      min-height: 0; height: 100%;
+      padding: clamp(12px, 2.5dvh, 22px) clamp(14px, 4vw, 22px);
+      gap: 8px;
+    }
+    .intro-copy__top .label { font-size: 10px; }
+    .intro-copy__mark { font: 500 27px/.9 var(--font-sans); }
+    .intro-copy h1 { font-size: clamp(36px, 10vw, 52px); line-height: .87; margin: 0 0 8px; }
+    .intro-copy h1 br { display: initial; }
+    .intro-copy p { font-size: clamp(14px, 3.9vw, 17px); line-height: 1.18; margin: 0 0 12px; }
+    .feature-copy__index { font-size: 30px; }
+    .feature-copy h2 { font-size: clamp(24px, 7vw, 35px); line-height: .96; margin: 0 0 8px; }
+    .feature-copy p { font-size: clamp(13px, 3.5vw, 16px); line-height: 1.2; margin: 0 0 10px; }
+    .chapter-link { padding-top: 7px; font-size: 13px; }
+    .stage__foot { min-height: 31px; padding: 5px 0 0; }
+    .stage__next { font-size: 10px; }
+  }
+  /*
+   * Very short in-app browsers cannot display a complete slide. Preserve all
+   * content by switching to flowing chapters rather than clipping controls.
+   */
+  @media (max-height: 570px) {
+    .stage { height: auto; min-height: 0; padding-bottom: 12px; }
+    .intro-layout, .feature-layout, .index-layout, .closing-layout { min-height: 0; }
+    .intro-copy, .feature-copy { min-height: 185px; }
+    .stage__layout { overflow: visible; }
   }
 </style>
