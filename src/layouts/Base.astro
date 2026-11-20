@@ -92,7 +92,7 @@ const og = image ? await getImage({ src: image, width: 1200, format: 'jpg' }) : 
 
   /* On short viewports, the individual slide contents can flow and be read
      in full rather than being clipped to a screen-height rectangle. */
-  @media (max-height: 700px), (prefers-reduced-motion: reduce) {
+  @media (max-height: 570px), (prefers-reduced-motion: reduce) {
     :global(body.homepage-presentation) main { scroll-snap-type: none; }
   }
 </style>
