@@ -54,6 +54,12 @@ const path = Astro.url.pathname;
     height: var(--presentation-header-height);
     min-height: 0;
   }
+  /* Prevent the 62px logo plus 20px padding from exceeding a 68px header. */
+  :global(body.homepage-presentation) .masthead__identity { padding-block: 4px; }
+  :global(body.homepage-presentation) .masthead__mark {
+    width: clamp(38px, 4vw, 52px);
+    height: clamp(38px, 4vw, 52px);
+  }
   @media (max-width: 480px) {
     .masthead__inner { min-height: 70px; }
     .masthead__nav { gap: clamp(10px, 3vw, 20px); }
