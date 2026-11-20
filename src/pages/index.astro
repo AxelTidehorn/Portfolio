@@ -1,0 +1,119 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import WorkCard from '../components/WorkCard.astro';
+import { site } from '../data/site';
+import { getAllWork } from '../lib/work';
+
+const all = await getAllWork();
+// Interleave featured photography and projects so neither dominates.
+const featuredPhoto = all.filter((w) => w.featured && w.kind === 'Photography');
+const featuredOther = all.filter((w) => w.featured && w.kind !== 'Photography');
+const selected = Array.from({ length: Math.max(featuredPhoto.length, featuredOther.length) })
+  .flatMap((_, i) => [featuredPhoto[i], featuredOther[i]])
+  .filter(Boolean);
+---
+<Base image={site.hero.image} sheet="Index">
+  <section class="hero wrap">
+    <figure>
+      <Image
+        src={site.hero.image}
+        alt={site.hero.alt}
+        widths={[800, 1200, 1800, 2400, 3000]}
+        sizes="(min-width: 1100px) 75vw, 100vw"
+        quality={86}
+        loading="eager"
+        fetchpriority="high"
+      />
+    </figure>
+    <aside class="hero__side">
+      <div>
+        <span class="label">Fig. 01</span>
+        {site.hero.placeholder && <span class="badge">Placeholder</span>}
+      </div>
+      <p class="intro">{site.intro}</p>
+      <ul class="jump">
+        {site.nav.slice(0, 2).map((n) => (
+          <li><a href={n.href}><span class="label">{n.code}</span> {n.label} →</a></li>
+        ))}
+      </ul>
+    </aside>
+  </section>
+
+  <section class="selected wrap" aria-labelledby="sel">
+    <header class="sec-head">
+      <h2 id="sel">Selected work</h2>
+      <span class="label">{selected.length} items</span>
+    </header>
+    <div class="selected__grid">
+      {selected.map((w, i) => (
+        <WorkCard
+          href={w.href}
+          title={w.title}
+          kind={w.kind}
+          summary={w.summary}
+          cover={w.cover}
+          placeholder={w.placeholder}
+          sizes={i % 4 === 0 || i % 4 === 3 ? '(min-width: 760px) 58vw, 100vw' : '(min-width: 760px) 42vw, 100vw'}
+        />
+      ))}
+    </div>
+  </section>
+
+  <section class="index wrap" aria-labelledby="idx">
+    <header class="sec-head">
+      <h2 id="idx">Index of work</h2>
+    </header>
+    <table>
+      <thead>
+        <tr><th scope="col" class="label">No.</th><th scope="col" class="label">Title</th><th scope="col" class="label">Type</th><th scope="col" class="label">Status</th></tr>
+      </thead>
+      <tbody>
+        {all.map((w, i) => (
+          <tr>
+            <td class="label">{String(i + 1).padStart(2, '0')}</td>
+            <td><a href={w.href}>{w.title}</a></td>
+            <td>{w.kind}</td>
+            <td>{w.status ?? '—'}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
+</Base>
+
+<style>
+  .hero { display: grid; gap: 1.25rem; margin-bottom: clamp(3rem, 8vw, 7rem); }
+  .hero figure { margin: 0; }
+  .hero img { max-height: 82vh; width: auto; }
+  .hero__side { display: flex; flex-direction: column; gap: 1rem; border-top: 1px solid var(--rule); padding-top: 0.75rem; }
+  .hero__side > div { display: flex; justify-content: space-between; align-items: center; }
+  .intro { font-size: clamp(1.1rem, 1.6vw, 1.35rem); line-height: 1.4; max-width: 30rem; }
+  .jump { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule-soft); }
+  .jump a { display: block; padding: 0.6rem 0; border-bottom: 1px solid var(--rule-soft); text-decoration: none; }
+  @media (min-width: 1100px) {
+    .hero { grid-template-columns: minmax(0, 3fr) minmax(16rem, 1fr); align-items: end; }
+  }
+
+  .sec-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-top: 1px solid var(--rule); padding-top: 0.6rem; margin-bottom: 1.75rem;
+  }
+  .sec-head h2 { margin: 0; }
+
+  .selected { margin-bottom: clamp(3rem, 8vw, 7rem); }
+  .selected__grid { display: grid; gap: 2.5rem 1.5rem; }
+  @media (min-width: 760px) {
+    /* Asymmetric rhythm: one large lead item, then smaller ones. */
+    .selected__grid { grid-template-columns: repeat(12, 1fr); align-items: start; }
+    .selected__grid > :global(*) { grid-column: span 5; }
+    .selected__grid > :global(:nth-child(4n + 1)),
+    .selected__grid > :global(:nth-child(4n + 4)) { grid-column: span 7; }
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-weight: 500; padding: 0 0.75rem 0.5rem 0; }
+  td { border-top: 1px solid var(--rule-soft); padding: 0.65rem 0.75rem 0.65rem 0; vertical-align: baseline; }
+  td:first-child, th:first-child { width: 3.5rem; }
+  @media (max-width: 599px) { td:nth-child(4), th:nth-child(4) { display: none; } }
+</style>

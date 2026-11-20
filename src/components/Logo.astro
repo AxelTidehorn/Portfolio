@@ -1,0 +1,27 @@
+---
+// Renders src/assets/brand/LogoB.svg verbatim when present; otherwise a labelled empty slot.
+const found = import.meta.glob<string>('../assets/brand/LogoB.svg', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+});
+const raw = Object.values(found)[0];
+// Drop the XML prolog/DOCTYPE so the file can be inlined in HTML; the artwork itself is untouched.
+const svg = raw?.slice(raw.indexOf('<svg'));
+---
+{svg ? (
+  <span class="logo" role="img" aria-label="Axel Tidehorn logo" set:html={svg} />
+) : (
+  <span class="logo logo--slot" aria-hidden="true">Logo</span>
+)}
+
+<style>
+  .logo { display: block; width: 100%; height: 100%; }
+  .logo :global(svg) { width: 100%; height: 100%; display: block; }
+  .logo--slot {
+    display: grid; place-items: center;
+    border: 1px dashed var(--rule-soft);
+    font: 500 0.6rem/1 var(--font-mono); text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--ink-2);
+  }
+</style>

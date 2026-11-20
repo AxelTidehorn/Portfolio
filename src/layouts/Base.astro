@@ -1,0 +1,60 @@
+---
+import '../styles/global.css';
+import TitleBlock from '../components/TitleBlock.astro';
+import { site } from '../data/site';
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: ImageMetadata; // social share image
+  compact?: boolean;
+  sheet?: string;
+}
+const { title, description = site.description, image, compact, sheet } = Astro.props;
+const fullTitle = title ? `${title} — ${site.name}` : site.name;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const og = image ? await getImage({ src: image, width: 1200, format: 'jpg' }) : undefined;
+---
+<!doctype html>
+<html lang={site.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#f3f0e8" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {og && <meta property="og:image" content={new URL(og.src, Astro.site)} />}
+    <meta name="twitter:card" content={og ? 'summary_large_image' : 'summary'} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <TitleBlock compact={compact} sheet={sheet} />
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="foot wrap">
+      <span class="label">© {site.name}</span>
+      <a class="label" href="#main">Top ↑</a>
+    </footer>
+  </body>
+</html>
+
+<style>
+  main { padding-block: clamp(2rem, 5vw, 4rem); }
+  .foot {
+    display: flex; justify-content: space-between;
+    border-top: 1px solid var(--rule-soft);
+    padding-block: 1.25rem 2rem;
+  }
+  .foot a { text-decoration: none; }
+</style>

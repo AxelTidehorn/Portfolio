@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+---
+<Base title="About" description={`About ${site.name}.`} sheet="03 About">
+  <div class="wrap grid">
+    <h1>About</h1>
+    <div class="prose">
+      <span class="badge">Placeholder</span>
+      <p>PLACEHOLDER — a short biography goes here: background, what you photograph, and the kinds of engineering and software work you do.</p>
+      <h2>Contact</h2>
+      {site.contact.length > 0 ? (
+        <ul>{site.contact.map((c) => <li><a href={c.href}>{c.label}</a></li>)}</ul>
+      ) : (
+        <p>PLACEHOLDER — contact details will be added here (edit <code>contact</code> in <code>src/data/site.ts</code>).</p>
+      )}
+    </div>
+  </div>
+</Base>
+
+<style>
+  .grid { display: grid; gap: 1rem 3rem; }
+  @media (min-width: 900px) { .grid { grid-template-columns: 1fr 2fr; } }
+  .badge { margin-bottom: 1rem; }
+</style>
