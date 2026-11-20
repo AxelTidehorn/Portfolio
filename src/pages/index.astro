@@ -289,9 +289,9 @@ const hero = site.hero.image;
     .closing-layout__links a { font-size: clamp(22px, 6vw, 31px); }
   }
   /*
-   * Small-screen art direction: a photograph at its real aspect ratio and a
-   * compact, legible information panel. Do not stretch a 3:2 photograph into
-   * a tall empty box or hide the panel beyond the viewport.
+   * Small-screen art direction: a large, deliberately cropped homepage cover
+   * and a compact legible information panel. Original photographs remain
+   * uncropped in their series pages. No tall empty image boxes.
    */
   @media (max-width: 600px) {
     .stage { padding-top: 6px; padding-bottom: 4px; }
@@ -299,20 +299,20 @@ const hero = site.hero.image;
     .intro-layout, .feature-layout {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
-      grid-template-rows: auto minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1.55fr) minmax(0, .95fr);
       gap: 8px;
     }
     .stage__figure {
       display: grid;
-      grid-template-rows: auto auto;
+      grid-template-rows: minmax(0, 1fr) auto;
       min-height: 0;
-      height: fit-content;
-      align-self: start;
+      height: 100%;
+      align-self: stretch;
     }
     .stage__image {
       display: block;
       width: 100%;
-      height: auto;
+      height: 100%;
       min-height: 0;
       overflow: hidden;
       background: transparent;
@@ -320,10 +320,10 @@ const hero = site.hero.image;
     .stage__image img {
       display: block;
       width: 100%;
-      height: auto;
-      max-height: min(39dvh, 360px);
-      object-fit: contain;
-      object-position: left top;
+      height: 100%;
+      max-height: none;
+      object-fit: cover;
+      object-position: center center;
     }
     .image-caption { min-height: 25px; padding: 4px 0; }
     .intro-copy, .feature-copy {
