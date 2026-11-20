@@ -170,7 +170,9 @@ const hero = site.hero.image;
   /* Every stage is one complete, viewport-sized composition.
      Height is bounded on normal devices, not inferred from a long content grid. */
   .stage {
+    /* Match the dedicated <main> scrollport below the header exactly. */
     height: calc(100svh - var(--presentation-header-height));
+    height: calc(100dvh - var(--presentation-header-height));
     min-height: 0;
     display: grid;
     grid-template-rows: minmax(0, 1fr) auto;
