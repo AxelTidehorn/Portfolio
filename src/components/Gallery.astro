@@ -30,10 +30,9 @@ const rows = toRows(items);
       {row.map((img) => (
         <figure>
           <a
-            class="snap"
-            style={`--r: ${img.src.height / img.src.width}${row.length === 1 ? '; --snap-max: 88vh' : ''}`}
+            class="gallery__link"
             href={img.full} data-index={img.index} data-full={img.full} data-caption={img.caption ?? ''}
-          ><div>
+          >
             <Image
               src={img.src}
               alt={img.alt}
@@ -42,7 +41,7 @@ const rows = toRows(items);
               quality={85}
               loading={img.index < 2 ? 'eager' : 'lazy'}
             />
-          </div></a>
+          </a>
           {img.caption && <figcaption class="label">{img.caption}</figcaption>}
         </figure>
       ))}
@@ -118,17 +117,23 @@ const rows = toRows(items);
 </script>
 
 <style>
-  /* Image boxes are rounded up to 8px (.snap) so the page below stays on the module. */
-  .gallery { display: grid; gap: var(--space); }
-  .row { display: grid; gap: var(--gap); }
+  /* Image dimensions follow the source, not the site's arbitrary 8px grid. */
+  .gallery { display: grid; gap: clamp(36px, 7vw, 112px); }
+  .row { display: grid; gap: clamp(12px, 2.5vw, 36px); min-width: 0; }
   .row--pair { align-items: start; }
-  @media (max-width: 759px) { .row--pair { grid-template-columns: 1fr !important; } }
-  figure { margin: 0; max-width: 100%; }
+  figure { margin: 0; min-width: 0; max-width: 100%; }
   figure a { display: block; cursor: zoom-in; }
-  .row:not(.row--pair) img { max-height: 88vh; width: auto; margin-inline: auto; }
+  .gallery__link img { display: block; max-width: 100%; height: auto; }
+  .row:not(.row--pair) img {
+    max-height: min(88svh, 1100px); width: auto; margin-inline: auto;
+  }
   .row:not(.row--pair) figcaption { text-align: center; }
-  .row--pair img { width: 100%; }
+  .row--pair img { width: 100%; height: auto; }
   figcaption { margin-top: 8px; }
+  @media (max-width: 759px) {
+    .row--pair { grid-template-columns: minmax(0, 1fr) !important; }
+    .row--pair img { width: auto; max-height: 85svh; margin-inline: auto; }
+  }
 
   .viewer {
     width: 100vw; height: 100dvh; max-width: none; max-height: none;
