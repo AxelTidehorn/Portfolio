@@ -96,7 +96,7 @@ const pad = (number: number) => String(number).padStart(2, '0');
 
   .lead { margin-bottom: clamp(64px, 10vw, 154px); }
   .lead__image, .series-entry__image { display: block; text-decoration: none; }
-  .lead__image img {
+  .lead__image :global(img) {
     display: block; width: auto; max-width: 100%; height: auto;
     max-height: min(78svh, 1000px);
     margin-inline: auto;
@@ -126,7 +126,7 @@ const pad = (number: number) => String(number).padStart(2, '0');
   .series-list { display: grid; gap: clamp(64px, 10vw, 160px); }
   .series-entry { width: min(92%, 1300px); }
   .series-entry--offset { margin-left: auto; }
-  .series-entry__image img {
+  .series-entry__image :global(img) {
     display: block; width: auto; max-width: 100%; height: auto;
     max-height: min(75svh, 900px);
     margin-inline: auto;
