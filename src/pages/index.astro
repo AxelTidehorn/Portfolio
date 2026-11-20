@@ -120,7 +120,7 @@ const hero = site.hero.image;
               <span class="label">{pad(all.length)} total entries</span>
             </div>
           </header>
-          <ol class="index-list" start={pageIndex * pageSize + 1}>
+          <ol class="index-list" start={pageIndex * pageSize + 1} style={`--entries: ${page.length}`}>
             {page.map((work, itemIndex) => (
               <li>
                 <a href={work.href}>
@@ -228,7 +228,7 @@ const hero = site.hero.image;
   .index-heading__label > span:last-child { font-size: clamp(30px, 4vw, 56px); line-height: .75; }
   .index-heading__title { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; padding: clamp(16px, 2vw, 32px); border-bottom: 2px solid var(--ink); flex-wrap: wrap; }
   .index-heading h2 { font-size: clamp(30px, 4.5vw, 67px); margin: 0; }
-  .index-list { padding: clamp(12px, 2svh, 25px) 0; margin: 0; display: grid; grid-template-rows: repeat(5, minmax(0, 1fr)); list-style: none; min-height: 0; }
+  .index-list { padding: clamp(12px, 2svh, 25px) 0; margin: 0; display: grid; grid-template-rows: repeat(var(--entries, 5), minmax(0, 1fr)); list-style: none; min-height: 0; }
   .index-list li { display: flex; align-items: center; min-height: 0; border-bottom: 1px solid var(--rule-soft); }
   .index-list li:first-child { border-top: 1px solid var(--rule-soft); }
   .index-list a { display: grid; grid-template-columns: 62px minmax(0, 1.2fr) minmax(0, .8fr) 20px; align-items: center; width: 100%; gap: 12px; padding: 8px 0; text-decoration: none; }
