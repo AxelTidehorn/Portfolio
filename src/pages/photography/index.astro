@@ -72,7 +72,7 @@ const pad = (number: number) => String(number).padStart(2, '0');
     )}
 
     <footer class="photo-foot">
-      <p>The photographs come first. The equipment is a secondary part of the process.</p>
+      <span class="label">Equipment and process</span>
       <a href="/gear/">Photography equipment</a>
     </footer>
   </div>
@@ -145,7 +145,7 @@ const pad = (number: number) => String(number).padStart(2, '0');
     gap: 10px 30px; margin-top: clamp(70px, 12vw, 170px);
     padding: 24px 0 0; border-top: 6px solid var(--accent);
   }
-  .photo-foot p { max-width: 470px; color: var(--ink-2); }
+  .photo-foot .label { color: var(--ink-2); }
   .photo-foot a { font-weight: 700; text-decoration: underline; text-underline-offset: 5px; }
 
   @media (max-width: 700px) {
