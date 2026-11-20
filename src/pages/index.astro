@@ -6,7 +6,6 @@ import { site } from '../data/site';
 import { getAllWork } from '../lib/work';
 
 const all = await getAllWork();
-// Photography leads the selection; other disciplines remain immediately discoverable.
 const featuredPhoto = all.filter((w) => w.featured && w.kind === 'Photography');
 const featuredOther = all.filter((w) => w.featured && w.kind !== 'Photography');
 const selected = [...featuredPhoto, ...featuredOther];
@@ -17,64 +16,56 @@ const counts = {
 const pad = (n: number) => String(n).padStart(2, '0');
 const hero = site.hero.image;
 ---
-<Base image={hero} sheet="Index">\n  <div class="home-story">
-  <section id="intro" class="opening wrap story-section" aria-labelledby="opening-title">
-    <div class="opening__eyebrow">
-      <span class="label">Independent practice / Sweden</span>
-      <span class="label">Photography · Objects · Experiments</span>
-    </div>
-    <h1 id="opening-title" class="opening__title">
-      <span>AXEL</span>
-      <span class="opening__second">TIDEHORN<span class="opening__dot">.</span></span>
-    </h1>
-    <div class="opening__bottom">
-      <p>Photography, design and the pleasure of figuring things out.</p>
-      <a class="opening__next label" href="#photograph">Explore ↓</a>
-    </div>
-  </section>
-
-  <section id="photograph" class="hero wrap story-section" aria-label="Featured photography">
-    <figure class="hero__fig">
-      <Image
-        src={hero}
-        alt={site.hero.alt}
-        widths={[800, 1200, 1800, 2400, 3000]}
-        sizes="(min-width: 1100px) 72vw, 100vw"
-        quality={86}
-        loading="eager"
-        fetchpriority="high"
-      />
-      <figcaption class="hero__caption">
-        <span class="label">01 / Featured photograph</span>
-        {site.hero.placeholder && <span class="badge">Placeholder</span>}
-      </figcaption>
-    </figure>
-    <aside class="hero__panel">
-      <div class="hero__panel-top">
-        <span class="label">AT / 001</span>
-        <span class="hero__glyph" aria-hidden="true">↗</span>
+<Base image={hero} sheet="Index">
+  <section id="intro" class="hero wrap" aria-labelledby="home-title">
+    <div class="hero__heading">
+      <div class="hero__eyebrow">
+        <span class="label">Photography / Design / Engineering</span>
+        <span class="label">Independent practice · Sweden</span>
       </div>
-      <div class="hero__panel-bottom">
-        <p>{site.intro}</p>
-        <ul class="hero__links">
-          {site.nav.slice(0, 2).map((n) => (
-            <li>
+      <h1 id="home-title">Axel <span>Tidehorn<span class="hero__dot">.</span></span></h1>
+      <p>Photographs, things made, and things in progress.</p>
+    </div>
+    <div class="hero__composition">
+      <figure class="hero__figure">
+        <Image
+          src={hero}
+          alt={site.hero.alt}
+          widths={[800, 1200, 1800, 2400, 3000]}
+          sizes="(min-width: 1000px) 73vw, 100vw"
+          quality={86}
+          loading="eager"
+          fetchpriority="high"
+        />
+        <figcaption>
+          <span class="label">01 / Featured photograph</span>
+          {site.hero.placeholder && <span class="badge">Placeholder</span>}
+        </figcaption>
+      </figure>
+      <aside class="hero__side" aria-label="Explore the portfolio">
+        <div class="hero__side-top"><span class="label">AT / Portfolio</span><span aria-hidden="true">↗</span></div>
+        <div>
+          <p>{site.intro}</p>
+          <nav aria-label="Explore work">
+            {site.nav.slice(0, 2).map((n) => (
               <a href={n.href}>
                 <span>{n.label}</span>
-                <span class="hero__link-count">{pad(counts[n.href as keyof typeof counts])} ↗</span>
+                <span class="label">{pad(counts[n.href as keyof typeof counts])} ↗</span>
               </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </aside>
+            ))}
+          </nav>
+        </div>
+      </aside>
+    </div>
   </section>
 
-  <section id="work" class="selected wrap story-section" aria-labelledby="sel">
-    <header class="sec-head rule">
-      <span class="label">02 / Selection</span>
-      <h2 id="sel">Selected work</h2>
-      <span class="label">{pad(selected.length)} items</span>
+  <section id="work" class="selected wrap" aria-labelledby="sel">
+    <header class="section-heading">
+      <div class="section-heading__marker"><span class="label">02 / The work</span><span aria-hidden="true">↘</span></div>
+      <div class="section-heading__copy">
+        <h2 id="sel">Selected work</h2>
+        <span class="label">{pad(selected.length)} selected projects and photo series</span>
+      </div>
     </header>
     <div class="selected__grid">
       {selected.map((w, i) => (
@@ -86,16 +77,23 @@ const hero = site.hero.image;
           summary={w.summary}
           cover={w.cover}
           placeholder={w.placeholder}
-          sizes={i % 4 === 0 || i % 4 === 3 ? '(min-width: 760px) 58vw, 100vw' : '(min-width: 760px) 42vw, 100vw'}
+          sizes={i === 0 ? '(min-width: 760px) 75vw, 100vw' : '(min-width: 760px) 46vw, 100vw'}
         />
       ))}
     </div>
+    <div class="selected__links">
+      <a href="/photography/">All photography ↗</a>
+      <a href="/projects/">All projects ↗</a>
+    </div>
   </section>
 
-  <section id="directory" class="index wrap story-section" aria-labelledby="idx">
-    <header class="sec-head rule">
-      <span class="label">03 / Index</span>
-      <h2 id="idx">Index of work</h2>
+  <section id="directory" class="index wrap" aria-labelledby="idx">
+    <header class="section-heading section-heading--index">
+      <div class="section-heading__marker"><span class="label">03 / Directory</span><span aria-hidden="true">↗</span></div>
+      <div class="section-heading__copy">
+        <h2 id="idx">Index of work</h2>
+        <span class="label">{pad(all.length)} entries</span>
+      </div>
     </header>
     <table>
       <thead>
@@ -113,172 +111,135 @@ const hero = site.hero.image;
       </tbody>
     </table>
   </section>
-  </div>\n</Base>
+</Base>
 
 <style>
-  /* Poster-like first impression: one monumental typographic move, then the photograph. */
-  .opening { margin-bottom: clamp(18px, 2.5vw, 36px); }
-  .opening__eyebrow { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-bottom: 14px; border-bottom: 1px solid var(--rule-soft); }
-  .opening__title {
-    font-weight: 850;
-    font-stretch: 65%;
-    font-size: clamp(78px, 13.7vw, 225px);
-    line-height: 0.78;
-    letter-spacing: -0.065em;
-    text-transform: uppercase;
-    margin: 20px 0 24px;
+  /* Chapter snap on wide screens only. The root viewport is the scroll container;
+     no height locks or JS wheel interception. With proximity, long galleries can
+     scroll freely inside a section and only settle at a nearby chapter boundary. */
+  @media (min-width: 1100px) and (prefers-reduced-motion: no-preference) {
+    :global(html:has(#intro)) {
+      scroll-snap-type: y proximity;
+      scroll-padding-top: clamp(12px, 2vw, 28px);
+    }
+    #intro, #work, #directory {
+      scroll-snap-align: start;
+      scroll-snap-stop: normal;
+    }
   }
-  .opening__title > span { display: block; }
-  .opening__second { padding-left: clamp(8px, 8vw, 142px); }
-  .opening__dot { color: var(--accent); }
-  .opening__bottom {
-    display: flex; align-items: end; justify-content: space-between;
-    gap: 20px; border-top: 2px solid var(--ink); padding-top: 13px;
-  }
-  .opening__bottom p { max-width: 440px; margin: 0; font-size: clamp(18px, 2vw, 26px); line-height: 1.2; font-weight: 550; font-stretch: 86%; }
-  .opening__edition { text-align: right; }
 
-  .hero {
-    display: grid;
-    gap: 0;
-    margin-bottom: calc(var(--space) * 1.2);
-    align-items: stretch;
+  /* A photograph-led first composition. Typography identifies the maker; it does not replace the image. */
+  .hero { margin-bottom: clamp(72px, 9vw, 140px); }
+  .hero__heading { padding-bottom: clamp(16px, 2.3vw, 32px); }
+  .hero__eyebrow { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px; margin-bottom: clamp(14px, 2vw, 28px); }
+  .hero__heading h1 {
+    font-size: clamp(44px, 7.3vw, 106px);
+    line-height: .94;
+    font-weight: 790;
+    font-stretch: 76%;
+    letter-spacing: -.055em;
+    margin: 0 0 14px;
   }
-  .hero__fig { min-width: 0; margin: 0; display: flex; flex-direction: column; }
-  .hero__fig img { width: 100%; height: auto; max-height: min(68vw, 760px); object-fit: contain; object-position: left top; }
-  .hero__caption { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; border-top: 1px solid var(--rule); padding: 8px 0; }
-  .hero__panel {
-    background: var(--accent);
-    color: var(--ink);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: clamp(18px, 2.6vw, 40px);
-    min-width: 0;
+  .hero__heading h1 span { white-space: nowrap; }
+  .hero__dot { color: var(--accent); }
+  .hero__heading > p { font-size: clamp(17px, 1.8vw, 25px); line-height: 1.25; max-width: 650px; margin: 0; }
+  .hero__composition { display: grid; gap: 0; align-items: stretch; }
+  .hero__figure { margin: 0; min-width: 0; display: flex; flex-direction: column; }
+  .hero__figure img {
+    width: 100%; height: auto; max-height: min(76svh, 900px);
+    object-fit: contain; object-position: left center;
+    background: var(--paper-2);
   }
-  .hero__panel .label { color: var(--ink); }
-  .hero__panel-top { display: flex; justify-content: space-between; align-items: start; }
-  .hero__glyph { font-size: clamp(68px, 9vw, 148px); font-weight: 350; line-height: 0.72; }
-  .hero__panel-bottom p { font-size: clamp(22px, 2.3vw, 35px); font-weight: 730; font-stretch: 78%; line-height: 1.08; letter-spacing: -0.03em; margin: 40px 0; }
-  .hero__links { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
-  .hero__links li { border-bottom: 1px solid rgb(28 27 24 / 0.5); }
-  .hero__links a {
-    display: flex; justify-content: space-between; gap: 12px; padding: 12px 0;
-    text-decoration: none; font-size: clamp(18px, 1.5vw, 22px); font-weight: 700; font-stretch: 78%;
+  .hero__figure figcaption { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-top: 1px solid var(--ink); padding: 8px 0 0; min-height: 32px; }
+  .hero__side {
+    background: var(--accent); color: var(--ink);
+    display: flex; flex-direction: column; justify-content: space-between;
+    gap: 32px; padding: clamp(18px, 2.6vw, 40px);
   }
-  .hero__links a:hover { color: var(--ink); text-decoration: underline; }
-  .hero__link-count { font: 500 13px/1.4 var(--font-mono); white-space: nowrap; }
+  .hero__side .label { color: var(--ink); }
+  .hero__side-top { display: flex; justify-content: space-between; align-items: start; }
+  .hero__side-top > span:last-child { font-size: clamp(32px, 5vw, 65px); line-height: .8; }
+  .hero__side p { font-size: clamp(19px, 1.8vw, 27px); font-weight: 660; line-height: 1.2; font-stretch: 86%; max-width: 420px; }
+  .hero__side nav { border-top: 2px solid var(--ink); }
+  .hero__side nav a {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 12px; padding: 11px 0;
+    border-bottom: 1px solid rgb(28 27 24 / .55);
+    text-decoration: none; font-weight: 720; font-size: 19px;
+  }
+  .hero__side nav a:hover { color: var(--ink); text-decoration: underline; }
+  @media (min-width: 1000px) {
+    .hero__composition { grid-template-columns: minmax(0, 2.55fr) minmax(265px, 1fr); }
+  }
+  @media (max-width: 999px) {
+    .hero__side { min-height: 215px; flex-direction: row; flex-wrap: wrap; align-items: end; }
+    .hero__side-top { width: 100%; }
+    .hero__side > div:last-child { width: 100%; }
+    .hero__side p { max-width: 560px; }
+  }
 
-  .selected { margin-bottom: var(--space); }
-  .selected .sec-head { --rt: 3px; gap: 20px; padding-top: 18px; margin-bottom: 24px; }
-  .selected .sec-head h2 { font-size: clamp(46px, 7.7vw, 118px); font-weight: 820; font-stretch: 68%; letter-spacing: -0.055em; }
-  .selected__grid { display: grid; gap: clamp(28px, 3vw, 48px) var(--gap); }
-  .selected__grid > :global(:first-child) { grid-column: 1 / -1; }
+  /* Repeated editorial header motif makes the whole page feel designed, not just the hero. */
+  .selected { margin-bottom: clamp(72px, 9vw, 140px); }
+  .section-heading {
+    display: grid; grid-template-columns: minmax(0, 1fr);
+    margin-bottom: clamp(28px, 3.5vw, 48px);
+    border-top: 2px solid var(--ink);
+  }
+  .section-heading__marker {
+    display: flex; align-items: start; justify-content: space-between;
+    gap: 16px; background: var(--accent); color: var(--ink);
+    padding: 16px clamp(18px, 2.5vw, 36px);
+  }
+  .section-heading__marker .label { color: var(--ink); }
+  .section-heading__marker > span:last-child { font-size: 42px; line-height: .7; }
+  .section-heading__copy {
+    display: flex; align-items: baseline; justify-content: space-between;
+    flex-wrap: wrap; gap: 8px 22px;
+    padding: 18px clamp(18px, 2.5vw, 36px) 20px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .section-heading h2 {
+    margin: 0; font-size: clamp(33px, 4.6vw, 68px);
+    font-weight: 780; font-stretch: 78%; letter-spacing: -.045em;
+  }
+  .selected__grid {
+    display: grid; grid-template-columns: minmax(0, 1fr);
+    gap: clamp(36px, 5vw, 72px) var(--gap);
+  }
+  .selected__links { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: flex-end; margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--rule); }
+  .selected__links a { font-weight: 700; text-decoration: none; }
+  .selected__links a:hover { text-decoration: underline; }
   @media (min-width: 760px) {
-    .selected__grid { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
-    .selected__grid > :global(:first-child) { width: min(82%, 1180px); }
+    .section-heading { grid-template-columns: minmax(155px, .34fr) minmax(0, 1.66fr); }
+    .section-heading__marker { padding-block: 24px; }
+    .selected__grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+    .selected__grid > :global(:first-child) { grid-column: 1 / -1; width: min(100%, 1160px); }
   }
+
+  /* Same editorial header motif, quieter table. Neither section loses the design language. */
   .index { container-type: inline-size; }
+  .section-heading--index .section-heading__marker { background: var(--ink); }
+  .section-heading--index .section-heading__marker .label,
+  .section-heading--index .section-heading__marker > span:last-child { color: var(--paper); }
+  .section-heading--index .section-heading__copy { border-bottom: 5px solid var(--accent); }
   table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-  th, td { text-align: left; vertical-align: top; padding: 8px 16px 8px 0; line-height: 24px; }
+  th, td { text-align: left; vertical-align: top; padding: 9px 16px 9px 0; line-height: 24px; }
   th { font-weight: 500; padding-block: 12px; line-height: 16px; box-shadow: inset 0 1px 0 var(--rule); }
   td { box-shadow: inset 0 1px 0 var(--rule-soft); }
   tbody tr:first-child td { box-shadow: inset 0 1px 0 var(--rule); }
   tbody tr:last-child td { box-shadow: inset 0 1px 0 var(--rule-soft), 0 1px 0 var(--rule); }
   th:nth-child(1) { width: 48px; }
   th:nth-child(2) { width: 48%; }
-  .index__title { font-size: 18px; font-weight: 600; font-stretch: 88%; }
+  .index__title { font-size: clamp(16px, 1.4vw, 20px); font-weight: 650; font-stretch: 88%; }
   .index__title a { text-decoration: none; }
-  @media (max-width: 759px) { td:nth-child(4), th:nth-child(4) { display: none; } }
+  .index__title a:hover { text-decoration: underline; }
+  @media (max-width: 759px) {
+    td:nth-child(4), th:nth-child(4) { display: none; }
+    .hero__heading h1 { font-size: clamp(38px, 10vw, 72px); }
+  }
   @media (min-width: 760px) {
     th:nth-child(1) { width: 80px; }
     th:nth-child(2) { width: 40%; }
     th:nth-child(3) { width: 30%; }
-  }
-  @media (min-width: 1100px) {
-    .hero { grid-template-columns: minmax(0, 2.15fr) minmax(280px, 0.85fr); }
-  }
-  @media (max-width: 1099px) {
-    .hero__panel { min-height: 280px; }
-    .hero__panel-bottom p { margin: 16px 0 24px; max-width: 640px; }
-    .hero__glyph { font-size: 76px; }
-  }
-  @media (max-width: 600px) {
-    .opening__title { font-size: clamp(53px, 14vw, 84px); margin: 18px 0; letter-spacing: -0.06em; }
-    .opening__second { padding-left: 4vw; }
-    .opening__bottom { align-items: start; }
-    .opening__bottom p { font-size: 17px; max-width: 240px; }
-    .hero__panel { min-height: 300px; }
-    .selected .sec-head { flex-wrap: wrap; gap: 8px 14px; }
-    .selected .sec-head h2 { order: 2; flex-basis: 100%; }
-  }
-
-  /* Home page is an intentional sequence of compositions.
-     Snap applies only to wide pointer-led layouts; tall sections can still be
-     scrolled through without trapping content. Natural flow elsewhere. */
-  :global(html:has(.home-story)) { scroll-padding-top: 0; }
-  .home-story { overflow: clip; }
-  .story-section { scroll-snap-align: start; scroll-snap-stop: always; }
-  .opening {
-    background: var(--accent);
-    min-height: calc(100svh - clamp(90px, 10vw, 142px));
-    padding: clamp(20px, 3vw, 48px);
-    display: flex; flex-direction: column; justify-content: space-between;
-  }
-  .opening__eyebrow { border-bottom: 2px solid var(--ink); }
-  .opening__title {
-    font-size: clamp(72px, 14.8vw, 245px);
-    font-stretch: 60%; line-height: .79; letter-spacing: -.075em;
-    overflow-wrap: normal;
-    margin: 40px 0;
-  }
-  .opening__title .opening__second { padding-left: 0; }
-  .opening__dot { color: var(--paper); }
-  .opening__bottom { border-top: 2px solid var(--ink); padding-top: 16px; }
-  .opening__bottom p { font-weight: 720; max-width: 620px; font-size: clamp(19px, 2.3vw, 34px); }
-  .opening .label { color: var(--ink); }
-  .opening__next { color: var(--ink); white-space: nowrap; font-weight: 650; text-decoration: none; }
-  .opening__next:hover { color: var(--ink); text-decoration: underline; }
-  .hero {
-    min-height: 100svh;
-    padding-top: clamp(24px, 4vw, 60px);
-    padding-bottom: clamp(24px, 4vw, 60px);
-    align-content: center;
-  }
-  .hero__fig { justify-content: center; }
-  .hero__fig img { max-height: calc(100svh - 155px); }
-  .selected {
-    min-height: 100svh;
-    padding-top: clamp(24px, 4vw, 60px);
-  }
-  .selected .sec-head {
-    padding: clamp(20px, 3vw, 48px);
-    margin-bottom: clamp(24px, 3vw, 48px);
-    background: var(--accent);
-    border: 0;
-    align-items: end;
-  }
-  .selected .sec-head .label { color: var(--ink); }
-  .selected .sec-head h2 { line-height: .87; }
-  .index {
-    min-height: 100svh;
-    padding-top: clamp(24px, 4vw, 60px);
-  }
-  .index .sec-head { border-top: 10px solid var(--accent); }
-  @media (min-width: 1100px) and (prefers-reduced-motion: no-preference) {
-    :global(html:has(.home-story)) { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
-  }
-  @media (max-width: 1099px) {
-    .opening { min-height: min(76svh, 840px); }
-    .hero, .selected, .index { min-height: 0; }
-    .hero__fig img { max-height: 75svh; }
-  }
-  @media (max-width: 650px) {
-    .opening { padding: 22px; min-height: 65svh; }
-    .opening__title { font-size: clamp(43px, 13vw, 88px); letter-spacing: -.055em; }
-    .opening__bottom { align-items: end; }
-    .opening__bottom p { font-size: 19px; max-width: 230px; }
-    .selected .sec-head { padding: 20px; }
-    .selected .sec-head h2 { font-size: clamp(41px, 9vw, 65px); }
   }
 </style>
