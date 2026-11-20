@@ -42,6 +42,16 @@ const path = Astro.url.pathname;
     height: 4px; background: var(--accent);
   }
   .masthead--compact .masthead__mark { width: 38px; height: 38px; }
+
+  /* A stable header height is part of the homepage composition, not an overlay. */
+  :global(body.homepage-presentation) .masthead {
+    position: sticky; top: 0; z-index: 40;
+    margin-bottom: 0; background: var(--paper);
+  }
+  :global(body.homepage-presentation) .masthead__inner {
+    height: var(--presentation-header-height);
+    min-height: 0;
+  }
   @media (max-width: 480px) {
     .masthead__inner { min-height: 70px; }
     .masthead__nav { gap: clamp(10px, 3vw, 20px); }
