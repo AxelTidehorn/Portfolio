@@ -46,7 +46,7 @@ const hero = site.hero.image;
           <span class="intro-copy__mark" aria-hidden="true">↗︎</span>
         </div>
         <div class="intro-copy__bottom">
-          <h1 id="home-title">Axel<br />Tidehorn<span>.</span></h1>
+          <h1 id="home-title">Axel <span>Tidehorn<b>.</b></span></h1>
           <p>Photography, product design, engineering and experiments.</p>
           <a class="chapter-link" href="/photography/">Explore photography <span aria-hidden="true">↗</span></a>
         </div>
@@ -61,10 +61,10 @@ const hero = site.hero.image;
   {features.map((work, i) => {
     const nextId = i + 1 < features.length ? `feature-${i + 2}` : nextAfterFeatures;
     const isPhoto = work.kind === 'Photography';
-    const inverse = i % 2 === 1;
+    const template = isPhoto ? 'poster' : i % 2 === 1 ? 'offset' : 'band';
     return (
       <section
-        class:list={['stage', 'stage--feature', 'wrap', { 'stage--inverse': inverse, 'stage--photo': isPhoto }]}
+        class:list={['stage', 'stage--feature', `stage--${template}`, 'wrap']}
         id={`feature-${i + 1}`}
         aria-labelledby={`feature-title-${i + 1}`}
       >
@@ -167,190 +167,164 @@ const hero = site.hero.image;
 </Base>
 
 <style>
-  /* Every stage is one complete, viewport-sized composition.
-     Height is bounded on normal devices, not inferred from a long content grid. */
-  .stage {
-    /* Match the dedicated <main> scrollport below the header exactly. */
-    height: calc(100svh - var(--presentation-header-height));
-    height: calc(100dvh - var(--presentation-header-height));
-    min-height: 0;
-    display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
-    gap: 0;
-    padding-top: clamp(12px, 1.8svh, 20px);
-    padding-bottom: 8px;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-  }
-  .stage__layout { min-height: 0; overflow: hidden; }
-  .stage__foot {
-    min-height: 38px;
-    display: flex; justify-content: space-between; align-items: center;
-    gap: 16px; border-top: 1px solid var(--ink); padding: 9px 0 2px;
-  }
-  .stage__next { font: 500 12px/1.3 var(--font-mono); text-decoration: none; }
-  .stage__next:hover { text-decoration: underline; }
-  .stage__figure { display: grid; grid-template-rows: minmax(0, 1fr) auto; min-width: 0; min-height: 0; margin: 0; }
-  .stage__image { display: grid; place-items: center; min-height: 0; min-width: 0; overflow: hidden; background: var(--paper-2); }
-  .stage__image img { display: block; height: 100%; width: 100%; object-fit: contain; object-position: center; }
-  .image-caption { min-height: 30px; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 6px 0; }
-  .image-caption .badge { font-size: 9px; }
-  .intro-layout, .feature-layout { display: grid; grid-template-columns: minmax(0, 2.1fr) minmax(250px, .85fr); gap: clamp(10px, 1.8vw, 28px); }
 
-  .intro-copy, .feature-copy { min-height: 0; display: flex; flex-direction: column; justify-content: space-between; padding: clamp(20px, 2.6vw, 44px); }
-  .intro-copy { background: var(--accent); color: var(--ink); }
-  .intro-copy .label { color: var(--ink); }
-  .intro-copy__top, .feature-copy__top { display: flex; justify-content: space-between; align-items: start; gap: 16px; }
-  .intro-copy__mark { font-size: clamp(34px, 4vw, 64px); line-height: .8; }
-  .intro-copy h1 { font-size: clamp(44px, 5.8vw, 86px); font-stretch: 72%; font-weight: 800; letter-spacing: -.058em; line-height: .92; margin: 0 0 clamp(20px, 4svh, 40px); }
-  .intro-copy h1 span { color: var(--paper); }
-  .intro-copy p { font-size: clamp(18px, 1.65vw, 23px); font-weight: 620; line-height: 1.23; max-width: 340px; margin: 0 0 clamp(24px, 4svh, 50px); }
-  .chapter-link { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border-top: 2px solid currentColor; padding: 12px 0 0; text-decoration: none; font-size: clamp(15px, 1.4vw, 19px); font-weight: 720; }
-  .chapter-link:hover { color: inherit; text-decoration: underline; }
+/* One composition per screen below the header. No unbounded middle section. */
+.stage {
+  height: calc(100svh - var(--presentation-header-height));
+  height: calc(100dvh - var(--presentation-header-height));
+  min-height: 0;
+  padding-block: clamp(7px, 1.2vh, 14px) 6px;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) 32px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+.stage__layout { min-height: 0; min-width: 0; overflow: hidden; }
+.stage__foot {
+  display: flex; justify-content: space-between; align-items: center;
+  min-height: 0; border-top: 1px solid var(--ink);
+  gap: 8px; padding: 5px 0 0;
+}
+.stage__next { font: 500 11px/1.2 var(--font-mono); text-decoration: none; white-space: nowrap; }
+.stage__next:hover { text-decoration: underline; }
+.stage__figure { display: grid; grid-template-rows: minmax(0, 1fr) 27px; min-height: 0; min-width: 0; margin: 0; }
+.stage__image { display: grid; place-items: center; min-width: 0; min-height: 0; overflow: hidden; background: var(--paper-2); }
+.stage__image img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; }
+.image-caption { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; padding: 4px 0 0; }
+.image-caption .badge { font-size: 9px; }
+.chapter-link { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; border-top: 2px solid currentColor; padding-top: 8px; font-size: clamp(14px, 1.25vw, 19px); font-weight: 750; text-decoration: none; }
+.chapter-link:hover { color: inherit; text-decoration: underline; }
 
-  /* The projects have their own layouts rather than one uncontrolled grid. */
-  .feature-copy { background: var(--paper-2); }
-  .feature-copy h2 { font-size: clamp(31px, 4.3vw, 66px); line-height: .96; font-stretch: 77%; letter-spacing: -.047em; margin: 0 0 22px; overflow-wrap: anywhere; }
-  .feature-copy p { font-size: clamp(17px, 1.6vw, 23px); line-height: 1.26; max-width: 390px; margin: 0 0 clamp(22px, 4svh, 46px); }
-  .feature-copy__index { font-size: clamp(42px, 6vw, 90px); line-height: .75; font-weight: 750; font-stretch: 70%; color: var(--accent-ink); }
-  .stage--inverse .feature-layout { grid-template-columns: minmax(250px, .85fr) minmax(0, 2.1fr); }
-  .stage--inverse .stage__figure { order: 2; }
-  .stage--inverse .feature-copy { order: 1; background: var(--ink); color: var(--paper); }
-  .stage--inverse .feature-copy .label { color: var(--paper); }
-  .stage--inverse .feature-copy__index { color: var(--accent); }
-  .stage--feature:not(.stage--inverse) .feature-copy { border-top: clamp(8px, 1.2vw, 18px) solid var(--accent); }
-  .stage--photo .feature-copy { background: var(--accent); border-top: 0 !important; }
-  .stage--photo .feature-copy .label { color: var(--ink); }
+/* Introduction: photograph first; a horizontal orange colophon rather than two columns. */
+.intro-layout { display: grid; grid-template-rows: minmax(0, 1fr) clamp(142px, 26%, 220px); gap: 8px; }
+.intro-layout .stage__figure { grid-row: 1; }
+.intro-copy { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, .9fr); align-items: end; padding: clamp(14px, 2vw, 30px); gap: 12px 40px; min-height: 0; background: var(--accent); }
+.intro-copy__top { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: start; }
+.intro-copy__top .label { color: var(--ink); }
+.intro-copy__mark { font-size: 24px; line-height: .7; }
+.intro-copy__bottom { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, .9fr); align-items: end; gap: 10px 40px; }
+.intro-copy h1 { font-size: clamp(40px, 5vw, 88px); line-height: .85; letter-spacing: -.052em; font-weight: 810; font-stretch: 73%; margin: 0; }
+.intro-copy h1 b { color: var(--paper); font-weight: inherit; }
+.intro-copy p { margin: 0 0 12px; font-size: clamp(16px, 1.6vw, 23px); line-height: 1.2; font-weight: 610; }
+.intro-copy .chapter-link { grid-column: 2; }
 
-  /* Five compact directory entries at most per screen, no variable-height list. */
-  .index-layout { display: grid; grid-template-rows: auto minmax(0, 1fr); }
-  .index-heading { display: grid; grid-template-columns: minmax(175px, .5fr) minmax(0, 1.5fr); border-top: 2px solid var(--ink); }
-  .index-heading__label { display: flex; justify-content: space-between; align-items: start; gap: 10px; padding: clamp(16px, 2vw, 32px); background: var(--accent); }
-  .index-heading__label .label { color: var(--ink); }
-  .index-heading__label > span:last-child { font-size: clamp(30px, 4vw, 56px); line-height: .75; }
-  .index-heading__title { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; padding: clamp(16px, 2vw, 32px); border-bottom: 2px solid var(--ink); flex-wrap: wrap; }
-  .index-heading h2 { font-size: clamp(30px, 4.5vw, 67px); margin: 0; }
-  .index-list { padding: clamp(12px, 2svh, 25px) 0; margin: 0; display: grid; grid-template-rows: repeat(var(--entries, 5), minmax(0, 1fr)); list-style: none; min-height: 0; }
-  .index-list li { display: flex; align-items: center; min-height: 0; border-bottom: 1px solid var(--rule-soft); }
-  .index-list li:first-child { border-top: 1px solid var(--rule-soft); }
-  .index-list a { display: grid; grid-template-columns: 62px minmax(0, 1.2fr) minmax(0, .8fr) 20px; align-items: center; width: 100%; gap: 12px; padding: 8px 0; text-decoration: none; }
-  .index-list a:hover strong { color: var(--accent-ink); }
-  .index-list__number { font: 500 12px var(--font-mono); }
-  .index-list strong { font-size: clamp(19px, 2.4vw, 35px); line-height: 1.05; font-weight: 750; font-stretch: 80%; overflow-wrap: anywhere; }
-  .index-list__kind { font: 400 clamp(10px, .95vw, 13px)/1.3 var(--font-mono); color: var(--ink-2); }
+/* Photography: large image and narrow editorial rail, deliberately unlike project spreads. */
+.stage--poster .feature-layout { display: grid; grid-template-columns: minmax(0, 3.4fr) minmax(210px, .8fr); gap: clamp(10px, 1.5vw, 24px); }
+.stage--poster .feature-copy { background: var(--paper); border-left: 10px solid var(--accent); display: flex; flex-direction: column; justify-content: space-between; padding: clamp(15px, 2vw, 30px); }
+.stage--poster .feature-copy__top { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+.stage--poster .feature-copy__index { color: var(--accent-ink); font-size: clamp(20px, 3.2vw, 48px); font-weight: 800; line-height: .8; }
+.stage--poster .feature-copy h2 { font-size: clamp(35px, 3.6vw, 63px); letter-spacing: -.04em; line-height: .95; margin: 0 0 18px; }
+.stage--poster .feature-copy p { margin: 0 0 26px; font-size: clamp(16px, 1.4vw, 21px); line-height: 1.25; }
 
-  .closing-layout { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; padding: clamp(20px, 3.5vw, 52px); background: var(--accent); }
-  .closing-layout .label { color: var(--ink); }
-  .closing-layout__top, .closing-layout__bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-  .closing-layout__links { align-content: center; display: grid; width: min(100%, 950px); margin-inline: auto; }
-  .closing-layout h2 { font-size: clamp(36px, 5vw, 70px); margin: 0 0 18px; }
-  .closing-layout__links a { display: flex; justify-content: space-between; gap: 12px; border-top: 2px solid var(--ink); padding: clamp(8px, 1.2svh, 15px) 0; font-size: clamp(24px, 3vw, 48px); font-weight: 770; font-stretch: 75%; line-height: 1.08; text-decoration: none; }
-  .closing-layout__links a:hover { color: var(--ink); text-decoration: underline; }
-  .closing-layout__links a:last-child { border-bottom: 2px solid var(--ink); }
+/* Technical spread: reverse the hierarchy, dark material block left and image right. */
+.stage--offset .feature-layout { display: grid; grid-template-columns: minmax(245px, .85fr) minmax(0, 1.85fr); gap: clamp(12px, 2vw, 32px); }
+.stage--offset .stage__figure { grid-column: 2; grid-row: 1; }
+.stage--offset .feature-copy { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; justify-content: space-between; padding: clamp(17px, 2.3vw, 36px); background: var(--ink); color: var(--paper); border-top: clamp(12px, 2vw, 28px) solid var(--accent); }
+.stage--offset .feature-copy__top { display: flex; justify-content: space-between; align-items: start; gap: 10px; }
+.stage--offset .feature-copy .label { color: var(--paper); }
+.stage--offset .feature-copy__index { color: var(--accent); font-size: clamp(32px, 4vw, 62px); font-weight: 800; line-height: .8; }
+.stage--offset .feature-copy h2 { font-size: clamp(34px, 3.7vw, 68px); letter-spacing: -.045em; line-height: .95; margin: 0 0 19px; }
+.stage--offset .feature-copy p { font-size: clamp(16px, 1.4vw, 22px); line-height: 1.23; margin: 0 0 25px; }
 
-  /* Compress and rearrange compositions rather than letting a slide overflow. */
-  @media (max-width: 850px) {
-    .intro-layout, .feature-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1.5fr) minmax(0, .85fr); gap: 10px; }
-    .stage--inverse .feature-layout { grid-template-columns: minmax(0, 1fr); }
-    .stage--inverse .stage__figure, .stage--inverse .feature-copy { order: initial; }
-    .intro-copy, .feature-copy { padding: clamp(15px, 3vw, 28px); }
-    .intro-copy h1 { font-size: clamp(32px, 6.5vw, 58px); margin-bottom: 10px; }
-    .intro-copy h1 br { display: none; }
-    .intro-copy p { margin-bottom: 12px; }
-    .feature-copy h2 { font-size: clamp(26px, 5vw, 47px); margin-bottom: 8px; }
-    .feature-copy p { font-size: 16px; margin-bottom: 12px; }
-    .feature-copy__index { font-size: 40px; }
-    .chapter-link { padding-top: 8px; font-size: 15px; }
-    .index-heading { grid-template-columns: minmax(140px, .55fr) minmax(0, 1.45fr); }
-    .index-list a { grid-template-columns: 42px minmax(0, 1fr) 20px; }
-    .index-list__kind { display: none; }
-  }
-  @media (max-width: 520px) {
-    .stage { padding-top: 10px; }
-    .stage__foot { min-height: 35px; }
-    .intro-layout, .feature-layout { grid-template-rows: minmax(0, 1.55fr) minmax(0, .95fr); }
-    .intro-copy h1 { font-size: clamp(31px, 8vw, 42px); line-height: 1; margin-bottom: 10px; }
-    .intro-copy p { font-size: 16px; margin-bottom: 10px; }
-    .intro-copy__mark { font-size: 32px; }
-    .feature-copy__top .label { font-size: 10px; }
-    .feature-copy__index { font-size: 35px; }
-    .feature-copy h2 { font-size: 30px; margin-bottom: 7px; }
-    .feature-copy p { font-size: 14px; line-height: 1.22; margin-bottom: 10px; }
-    .chapter-link { font-size: 13px; }
-    .index-heading { grid-template-columns: 1fr; }
-    .index-heading__label { padding: 10px 14px; }
-    .index-heading__label > span:last-child { font-size: 26px; }
-    .index-heading__title { padding: 13px 14px; }
-    .index-heading h2 { font-size: 31px; }
-    .index-list strong { font-size: clamp(18px, 5.1vw, 23px); }
-    .index-list a { grid-template-columns: 32px minmax(0, 1fr) 18px; gap: 6px; }
-    .closing-layout { padding: 20px; }
-    .closing-layout__top .label:last-child { display: none; }
-    .closing-layout__links a { font-size: clamp(22px, 6vw, 31px); }
-  }
-  /*
-   * Small-screen art direction: a large, deliberately cropped homepage cover
-   * and a compact legible information panel. Original photographs remain
-   * uncropped in their series pages. No tall empty image boxes.
-   */
-  @media (max-width: 600px) {
-    .stage { padding-top: 6px; padding-bottom: 4px; }
-    .stage__layout { overflow: visible; }
-    .intro-layout, .feature-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-rows: minmax(0, 1.55fr) minmax(0, .95fr);
-      gap: 8px;
-    }
-    .stage__figure {
-      display: grid;
-      grid-template-rows: minmax(0, 1fr) auto;
-      min-height: 0;
-      height: 100%;
-      align-self: stretch;
-    }
-    .stage__image {
-      display: block;
-      width: 100%;
-      height: 100%;
-      min-height: 0;
-      overflow: hidden;
-      background: transparent;
-    }
-    .stage__image img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      max-height: none;
-      object-fit: cover;
-      object-position: center center;
-    }
-    .image-caption { min-height: 25px; padding: 4px 0; }
-    .intro-copy, .feature-copy {
-      min-height: 0; height: 100%;
-      padding: clamp(12px, 2.5dvh, 22px) clamp(14px, 4vw, 22px);
-      gap: 8px;
-    }
-    .intro-copy__top .label { font-size: 10px; }
-    .intro-copy__mark { font: 500 27px/.9 var(--font-sans); }
-    .intro-copy h1 { font-size: clamp(36px, 10vw, 52px); line-height: .87; margin: 0 0 8px; }
-    .intro-copy h1 br { display: initial; }
-    .intro-copy p { font-size: clamp(14px, 3.9vw, 17px); line-height: 1.18; margin: 0 0 12px; }
-    .feature-copy__index { font-size: 30px; }
-    .feature-copy h2 { font-size: clamp(24px, 7vw, 35px); line-height: .96; margin: 0 0 8px; }
-    .feature-copy p { font-size: clamp(13px, 3.5vw, 16px); line-height: 1.2; margin: 0 0 10px; }
-    .chapter-link { padding-top: 7px; font-size: 13px; }
-    .stage__foot { min-height: 31px; padding: 5px 0 0; }
-    .stage__next { font-size: 10px; }
-  }
-  /*
-   * Very short in-app browsers cannot display a complete slide. Preserve all
-   * content by switching to flowing chapters rather than clipping controls.
-   */
-  @media (max-height: 570px) {
-    .stage { height: auto; min-height: 0; padding-bottom: 12px; }
-    .intro-layout, .feature-layout, .index-layout, .closing-layout { min-height: 0; }
-    .intro-copy, .feature-copy { min-height: 185px; }
-    .stage__layout { overflow: visible; }
-  }
+/* Catalogue plate: image over a full-width horizontal title strip. */
+.stage--band .feature-layout { display: grid; grid-template-rows: minmax(0, 1fr) clamp(146px, 27%, 220px); gap: 9px; }
+.stage--band .stage__figure { grid-row: 1; }
+.stage--band .feature-copy { min-height: 0; display: flex; flex-direction: column; justify-content: space-between; padding: clamp(15px, 2vw, 28px); gap: 8px 24px; background: var(--paper-2); border-bottom: 12px solid var(--accent); }
+.stage--band .feature-copy__top { display: flex; justify-content: space-between; gap: 16px; }
+.stage--band .feature-copy__index { color: var(--accent-ink); font-size: 20px; line-height: .9; font-weight: 750; }
+.stage--band .feature-copy__bottom { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .8fr); align-items: end; gap: 8px 24px; }
+.stage--band .feature-copy h2 { font-size: clamp(31px, 3.7vw, 64px); margin: 0; line-height: .94; grid-row: 1 / 3; }
+.stage--band .feature-copy p { font-size: clamp(15px, 1.35vw, 21px); line-height: 1.2; margin: 0; }
+.stage--band .feature-copy .chapter-link { grid-column: 2; }
+
+/* Index: compact poster rows, no uncontrolled free-flowing grid. */
+.index-layout { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.index-heading { display: grid; grid-template-columns: minmax(145px, .38fr) minmax(0, 1.62fr); border-top: 2px solid var(--ink); }
+.index-heading__label { padding: clamp(12px, 1.8vw, 26px); display: flex; justify-content: space-between; gap: 12px; background: var(--accent); }
+.index-heading__label > span:last-child { font-size: clamp(28px, 4vw, 52px); line-height: .8; }
+.index-heading__label .label { color: var(--ink); }
+.index-heading__title { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; padding: clamp(14px, 1.9vw, 28px); border-bottom: 2px solid var(--ink); }
+.index-heading h2 { font-size: clamp(30px, 4.6vw, 66px); margin: 0; }
+.index-list { padding: clamp(8px, 1vw, 20px) 0; margin: 0; list-style: none; display: grid; grid-template-rows: repeat(var(--entries, 5), minmax(0, 1fr)); min-height: 0; }
+.index-list li { display: flex; align-items: center; min-height: 0; border-bottom: 1px solid var(--rule-soft); }
+.index-list li:first-child { border-top: 1px solid var(--rule-soft); }
+.index-list a { display: grid; grid-template-columns: 50px minmax(0, 1.3fr) minmax(0, .7fr) 18px; gap: 15px; align-items: center; width: 100%; padding: 6px 0; text-decoration: none; }
+.index-list a:hover strong { color: var(--accent-ink); }
+.index-list__number { font: 500 12px/1.2 var(--font-mono); }
+.index-list strong { font-size: clamp(17px, 2.3vw, 32px); font-stretch: 77%; line-height: 1; overflow-wrap: anywhere; }
+.index-list__kind { font: 400 clamp(10px, 1vw, 13px)/1.3 var(--font-mono); color: var(--ink-2); }
+
+/* Final panel is intentionally typographic and navigational. */
+.closing-layout { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; padding: clamp(20px, 3.6vw, 55px); background: var(--accent); }
+.closing-layout .label { color: var(--ink); }
+.closing-layout__top, .closing-layout__bottom { display: flex; justify-content: space-between; gap: 16px; }
+.closing-layout__links { align-content: center; display: grid; width: min(100%, 950px); margin-inline: auto; }
+.closing-layout h2 { font-size: clamp(38px, 5vw, 80px); margin: 0 0 18px; }
+.closing-layout__links a { display: flex; justify-content: space-between; gap: 15px; border-top: 2px solid var(--ink); padding-block: clamp(7px, 1.4vh, 17px); font-size: clamp(23px, 3vw, 48px); font-weight: 790; font-stretch: 75%; line-height: 1.02; text-decoration: none; }
+.closing-layout__links a:last-child { border-bottom: 2px solid var(--ink); }
+.closing-layout__links a:hover { color: var(--ink); text-decoration: underline; }
+
+/* Tablet variants: each stage is still exactly one framed composition. */
+@media (max-width: 900px) {
+  .stage--poster .feature-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(130px, 26%); gap: 8px; }
+  .stage--poster .feature-copy { border-left: 0; border-top: 8px solid var(--accent); padding: clamp(12px, 2vw, 22px); }
+  .stage--poster .feature-copy h2 { font-size: clamp(28px, 5vw, 46px); margin-bottom: 5px; }
+  .stage--poster .feature-copy p { font-size: 16px; margin-bottom: 12px; }
+  .stage--offset .feature-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(145px, 32%); gap: 8px; }
+  .stage--offset .stage__figure { grid-column: 1; grid-row: 1; }
+  .stage--offset .feature-copy { grid-column: 1; grid-row: 2; padding: clamp(12px, 2vw, 20px); border-top-width: 8px; }
+  .stage--offset .feature-copy h2 { font-size: clamp(29px, 5vw, 49px); margin: 0 0 6px; }
+  .stage--offset .feature-copy p { margin: 0 0 12px; font-size: 16px; }
+  .stage--band .feature-layout { grid-template-rows: minmax(0, 1fr) minmax(145px, 28%); }
+  .index-list a { grid-template-columns: 38px minmax(0, 1fr) 18px; }
+  .index-list__kind { display: none; }
+}
+
+/* Mobile: media is the major field, the info strip uses minimal space. */
+@media (max-width: 600px) {
+  .stage { padding-block: 6px 4px; grid-template-rows: minmax(0, 1fr) 28px; }
+  .stage__figure { grid-template-rows: minmax(0, 1fr) 23px; }
+  .stage__foot { padding-top: 2px; }
+  .stage__foot .label { font-size: 9px; }
+  .stage__next { font-size: 9px; }
+  .stage__image img { object-fit: cover; }
+  .image-caption .label, .image-caption .badge { font-size: 9px; }
+  .intro-layout { grid-template-rows: minmax(0, 1fr) minmax(148px, 32%); gap: 6px; }
+  .intro-copy { display: flex; flex-direction: column; justify-content: space-between; gap: 4px; padding: 13px 15px; }
+  .intro-copy__top { display: flex; width: 100%; }
+  .intro-copy__top .label { font-size: 9px; }
+  .intro-copy__mark { font-size: 20px; }
+  .intro-copy__bottom { display: flex; flex-direction: column; align-items: stretch; gap: 4px; }
+  .intro-copy h1 { font-size: clamp(29px, 8.7vw, 40px); line-height: .95; white-space: nowrap; }
+  .intro-copy p { font-size: clamp(12px, 3.4vw, 15px); line-height: 1.12; margin: 0 0 4px; }
+  .intro-copy .chapter-link { font-size: 12px; padding-top: 4px; }
+  .chapter-link { padding-top: 5px; font-size: 12px; }
+  .stage--poster .feature-layout, .stage--offset .feature-layout, .stage--band .feature-layout { grid-template-rows: minmax(0, 1fr) minmax(145px, 35%); gap: 6px; }
+  .stage--poster .feature-copy, .stage--offset .feature-copy, .stage--band .feature-copy { display: flex; flex-direction: column; justify-content: space-between; align-items: stretch; gap: 4px; padding: 11px 14px; border-top-width: 6px; border-bottom-width: 0; }
+  .stage--poster .feature-copy__top, .stage--offset .feature-copy__top, .stage--band .feature-copy__top { width: 100%; display: flex; justify-content: space-between; }
+  .feature-copy__top .label { font-size: 9px; }
+  .stage--poster .feature-copy__index, .stage--offset .feature-copy__index, .stage--band .feature-copy__index { font-size: 20px; }
+  .stage--poster .feature-copy__bottom, .stage--offset .feature-copy__bottom, .stage--band .feature-copy__bottom { display: block; }
+  .stage--poster .feature-copy h2, .stage--offset .feature-copy h2, .stage--band .feature-copy h2 { font-size: clamp(24px, 6.7vw, 32px); line-height: .93; margin: 0 0 5px; }
+  .stage--poster .feature-copy p, .stage--offset .feature-copy p, .stage--band .feature-copy p { font-size: clamp(12px, 3.2vw, 14px); line-height: 1.12; margin: 0 0 7px; }
+  .index-heading { grid-template-columns: 1fr; }
+  .index-heading__label { align-items: center; padding: 8px 12px; }
+  .index-heading__label > span:last-child { font-size: 20px; }
+  .index-heading__title { padding: 10px 12px; }
+  .index-heading h2 { font-size: 28px; }
+  .index-list { padding-block: 8px; }
+  .index-list a { gap: 6px; grid-template-columns: 30px minmax(0, 1fr) 16px; }
+  .index-list strong { font-size: clamp(17px, 4.9vw, 22px); line-height: 1.05; }
+  .closing-layout { padding: 16px; }
+  .closing-layout__top .label:last-child { display: none; }
+  .closing-layout h2 { font-size: 36px; }
+  .closing-layout__links a { font-size: 25px; }
+}
+@media (max-height: 600px) {
+  .intro-layout { grid-template-rows: minmax(0, 1fr) minmax(140px, 38%); }
+  .stage--poster .feature-layout, .stage--offset .feature-layout, .stage--band .feature-layout { grid-template-rows: minmax(0, 1fr) minmax(140px, 42%); }
+}
+/* Below 450 CSS px, a legible page matters more than cropping essential content. */
+@media (max-height: 450px) { .stage { height: auto; min-height: 520px; } }
+
 </style>
