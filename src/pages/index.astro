@@ -46,7 +46,7 @@ const hero = site.hero.image;
           <span class="intro-copy__mark" aria-hidden="true">↗︎</span>
         </div>
         <div class="intro-copy__bottom">
-          <h1 id="home-title">Axel<br />Tidehorn<span>.</span></h1>
+          <h1 id="home-title">Axel <span>Tidehorn<b>.</b></span></h1>
           <p>Photography, product design, engineering and experiments.</p>
           <a class="chapter-link" href="/photography/">Explore photography <span aria-hidden="true">↗</span></a>
         </div>
@@ -61,10 +61,10 @@ const hero = site.hero.image;
   {features.map((work, i) => {
     const nextId = i + 1 < features.length ? `feature-${i + 2}` : nextAfterFeatures;
     const isPhoto = work.kind === 'Photography';
-    const inverse = i % 2 === 1;
+    const template = isPhoto ? 'poster' : i % 2 === 1 ? 'offset' : 'band';
     return (
       <section
-        class:list={['stage', 'stage--feature', 'wrap', { 'stage--inverse': inverse, 'stage--photo': isPhoto }]}
+        class:list={['stage', 'stage--feature', `stage--${template}`, 'wrap']}
         id={`feature-${i + 1}`}
         aria-labelledby={`feature-title-${i + 1}`}
       >
