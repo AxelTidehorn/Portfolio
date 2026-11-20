@@ -8,6 +8,7 @@ const series = await getSeries();
 <Base title="Photography" description="Photographic series by Axel Tidehorn." sheet="Photography" image={series[0]?.data.cover.src}>
   <div class="wrap">
     <header class="sec-head rule"><span class="label">01</span><h1>Photography</h1><span class="label">{String(series.length).padStart(2, '0')} series</span></header>
+    <div class="photo__tools"><span class="label">Behind the photographs</span><a href="/gear/">Cameras &amp; equipment ↗</a></div>
     <ol class="series">
       {series.map((s, i) => (
         <li>
@@ -28,6 +29,8 @@ const series = await getSeries();
 
 <style>
   .sec-head h1 { font-size: clamp(32px, 4vw, 52px); }
+  .photo__tools { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; margin-bottom: 32px; padding-bottom: 12px; border-bottom: 1px solid var(--rule-soft); }
+  .photo__tools a { text-decoration: none; font-weight: 650; }
   .series { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space); }
   .series li { display: grid; gap: 24px; }
   .series a.snap { display: block; }

@@ -12,7 +12,8 @@
   --rule-soft: rgb(37 36 32 / 0.24);
   --w-outline: 2px;
   --w-div: 1px;
-  --accent: #b5432a;
+  --accent: #f04b23; /* International orange, used as one strong editorial surface */
+  --accent-ink: #ab2d10; /* accessible text and hover treatment on paper */
   --viewer-bg: #111110;
   --font-sans: 'Archivo Variable', 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
@@ -33,8 +34,8 @@ body {
 }
 img { display: block; max-width: 100%; height: auto; }
 a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
-a:hover { color: var(--accent); }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+a:hover { color: var(--accent-ink); }
+:focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 3px; }
 h1, h2, h3 {
   font-weight: 750;
   font-stretch: 80%;

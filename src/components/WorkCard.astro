@@ -11,12 +11,13 @@ interface Props {
   cover: { src: ImageMetadata; alt: string };
   placeholder?: boolean;
   sizes?: string;
+  uniformCover?: boolean; // project index: consistent image ratio and aligned metadata
 }
-const { href, title, kind, no, summary, cover, placeholder, sizes = '(min-width: 760px) 40vw, 100vw' } = Astro.props;
+const { href, title, kind, no, summary, cover, placeholder, sizes = '(min-width: 760px) 40vw, 100vw', uniformCover = false } = Astro.props;
 ---
 <article class="card">
   <a href={href}>
-    <div class="snap" style={`--r: ${cover.src.height / cover.src.width}`}>
+    <div class:list={['card__image', { 'card__image--uniform': uniformCover, snap: !uniformCover }]} style={!uniformCover ? `--r: ${cover.src.height / cover.src.width}` : undefined}>
       <div><Image src={cover.src} alt={cover.alt} widths={[480, 800, 1200, 1600]} sizes={sizes} quality={82} /></div>
     </div>
     <div class="card__meta rule">
@@ -32,6 +33,11 @@ const { href, title, kind, no, summary, cover, placeholder, sizes = '(min-width:
 <style>
   .card a { text-decoration: none; display: block; }
   .card img { width: 100%; background: var(--paper-2); }
+  /* Consistent 8:5 covers in the project index, including source images with other ratios. */
+  .card__image--uniform { aspect-ratio: 8 / 5; overflow: hidden; }
+  .card__image--uniform > div { width: 100%; height: 100%; }
+  .card__image--uniform img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+
   .card__meta {
     --rt: var(--w-div);
     display: flex; align-items: center; gap: 16px;
