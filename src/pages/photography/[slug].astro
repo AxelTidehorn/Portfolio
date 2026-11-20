@@ -1,0 +1,39 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Gallery from '../../components/Gallery.astro';
+import { getSeries } from '../../lib/work';
+
+export async function getStaticPaths() {
+  const series = await getSeries();
+  return series.map((entry, i) => ({ params: { slug: entry.id }, props: { entry, next: series[(i + 1) % series.length] } }));
+}
+const { entry, next } = Astro.props;
+const { Content } = await render(entry);
+const { title, summary, images, placeholder } = entry.data;
+---
+<Base title={title} description={summary} image={entry.data.cover.src} compact>
+  <div class="wrap">
+    <header class="head">
+      <a class="label" href="/photography/">← Photography</a>
+      <h1>{title}</h1>
+      {placeholder && <span class="badge">Placeholder</span>}
+      <div class="prose"><Content /></div>
+    </header>
+    <Gallery images={images} label={`${title} — photographs`} />
+    {next.id !== entry.id && (
+      <nav class="next" aria-label="Series">
+        <span class="label">Next series</span>
+        <a href={`/photography/${next.id}/`}>{next.data.title} →</a>
+      </nav>
+    )}
+  </div>
+</Base>
+
+<style>
+  .head { margin-bottom: clamp(2rem, 5vw, 4rem); max-width: var(--measure); }
+  .head h1 { margin-top: 0.75rem; }
+  .head .label { text-decoration: none; }
+  .head .prose { margin-top: 1rem; color: var(--ink-2); }
+  .next { display: flex; justify-content: space-between; align-items: baseline; margin-top: clamp(3rem, 8vw, 6rem); border-top: 1px solid var(--rule-soft); padding-top: 0.75rem; }
+</style>

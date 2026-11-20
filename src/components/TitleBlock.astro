@@ -1,0 +1,93 @@
+---
+// Header modelled on an engineering drawing title block (ritningshuvud).
+// `compact` gives the restrained single-row variant used on gallery/detail pages.
+import Logo from './Logo.astro';
+import { site } from '../data/site';
+
+interface Props {
+  compact?: boolean;
+  sheet?: string; // name of the current section, shown in the block
+}
+const { compact = false, sheet = 'Index' } = Astro.props;
+const path = Astro.url.pathname;
+---
+<header class:list={['tb', { 'tb--compact': compact }]}>
+  <div class="tb__grid wrap">
+    <a class="tb__logo" href="/" aria-label={`${site.name} — home`}><Logo /></a>
+    <a class="tb__name" href="/">
+      <span class="tb__title">{site.name}</span>
+      {!compact && <span class="label">{site.disciplines.join(' · ')}</span>}
+    </a>
+    <nav class="tb__nav" aria-label="Main">
+      {site.nav.map((item) => {
+        const current = path.startsWith(item.href);
+        return (
+          <a href={item.href} aria-current={current ? 'page' : undefined}>
+            <span class="label">{item.code}</span>
+            <span>{item.label}</span>
+          </a>
+        );
+      })}
+    </nav>
+    {!compact && (
+      <div class="tb__meta">
+        <span class="label">Sheet</span>
+        <span>{sheet}</span>
+      </div>
+    )}
+  </div>
+</header>
+
+<style>
+  .tb { padding-top: var(--gutter); }
+  .tb__grid {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    grid-template-areas: 'logo name' 'nav nav';
+  }
+  .tb__grid > * {
+    border: 1px solid var(--rule);
+    margin: 0 -1px -1px 0; /* collapse shared rules */
+    padding: 0.7rem 0.85rem;
+    text-decoration: none;
+  }
+  .tb__logo { grid-area: logo; display: grid; place-items: center; padding: 0.6rem; }
+  .tb__logo > :global(*) { width: 100%; aspect-ratio: 1; height: auto; }
+  .tb__name { grid-area: name; display: flex; flex-direction: column; justify-content: center; gap: 0.3rem; }
+  .tb__title { font-size: 1.15rem; font-weight: 500; letter-spacing: -0.01em; }
+  .tb__nav { grid-area: nav; display: grid; grid-template-columns: repeat(3, 1fr); padding: 0; }
+  .tb__nav a {
+    display: flex; flex-direction: column; gap: 0.2rem;
+    padding: 0.6rem 0.85rem; text-decoration: none;
+  }
+  .tb__nav a + a { border-left: 1px solid var(--rule); }
+  .tb__nav a[aria-current='page'] { background: var(--ink); color: var(--paper); }
+  .tb__nav a[aria-current='page'] .label { color: var(--paper); opacity: 0.7; }
+  .tb__meta { display: none; }
+
+  @media (min-width: 760px) {
+    .tb__grid {
+      grid-template-columns: 6.5rem minmax(14rem, 1.4fr) 3fr;
+      grid-template-rows: auto auto;
+      grid-template-areas: 'logo name nav' 'logo name meta';
+    }
+    .tb__meta { grid-area: meta; display: flex; gap: 1rem; align-items: baseline; }
+    .tb__nav a { padding: 0.7rem 1rem; }
+  }
+
+  /* Compact: one thin row, no metadata. */
+  .tb--compact .tb__grid { grid-template-columns: 3rem 1fr; }
+  .tb--compact .tb__grid > * { border-color: var(--rule-soft); }
+  .tb--compact .tb__nav a + a { border-color: var(--rule-soft); }
+  .tb--compact .tb__logo { padding: 0.4rem; }
+  .tb--compact .tb__title { font-size: 1rem; }
+  @media (min-width: 760px) {
+    .tb--compact .tb__grid {
+      grid-template-columns: 3.25rem auto 1fr;
+      grid-template-areas: 'logo name nav';
+      grid-template-rows: auto;
+    }
+    .tb--compact .tb__nav { grid-template-columns: repeat(3, minmax(0, 11rem)); justify-content: end; }
+    .tb--compact .tb__nav a { flex-direction: row; gap: 0.6rem; align-items: baseline; }
+  }
+</style>

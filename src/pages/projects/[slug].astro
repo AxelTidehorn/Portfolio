@@ -1,0 +1,77 @@
+---
+// Flexible project template: title block with metadata, cover, Markdown body
+// (prose, CAD renders, diagrams, process images inline), then an optional gallery.
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Gallery from '../../components/Gallery.astro';
+import { getProjects } from '../../lib/work';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((entry, i) => ({ params: { slug: entry.id }, props: { entry, next: projects[(i + 1) % projects.length] } }));
+}
+const { entry, next } = Astro.props;
+const { Content } = await render(entry);
+const { title, summary, disciplines, status, cover, gallery, meta, links, placeholder } = entry.data;
+const rows = [
+  ...(disciplines.length ? [{ label: 'Discipline', value: disciplines.join(', ') }] : []),
+  ...(status ? [{ label: 'Status', value: status }] : []),
+  ...meta,
+];
+---
+<Base title={title} description={summary} image={cover.src} sheet={`02 Projects / ${title}`}>
+  <article class="wrap">
+    <a class="label back" href="/projects/">← Projects</a>
+    <header class="block">
+      <div class="block__title">
+        <h1>{title}</h1>
+        <p>{summary}</p>
+        {placeholder && <span class="badge">Placeholder</span>}
+      </div>
+      {rows.length > 0 && (
+        <dl class="block__meta">
+          {rows.map((r) => (<div><dt class="label">{r.label}</dt><dd>{r.value}</dd></div>))}
+        </dl>
+      )}
+    </header>
+
+    <figure class="cover">
+      <Image src={cover.src} alt={cover.alt} widths={[800, 1200, 1800, 2400]} sizes="(min-width: 1600px) 1520px, 100vw" quality={85} loading="eager" />
+    </figure>
+
+    <div class="body prose"><Content /></div>
+
+    {links.length > 0 && (
+      <ul class="links">{links.map((l) => <li><a href={l.href} rel="noopener">{l.label} ↗</a></li>)}</ul>
+    )}
+
+    {gallery.length > 0 && <Gallery images={gallery} label={`${title} — images`} />}
+
+    {next.id !== entry.id && (
+      <nav class="next" aria-label="Projects">
+        <span class="label">Next project</span>
+        <a href={`/projects/${next.id}/`}>{next.data.title} →</a>
+      </nav>
+    )}
+  </article>
+</Base>
+
+<style>
+  .back { display: inline-block; margin-bottom: 1rem; text-decoration: none; }
+  .block { display: grid; border: 1px solid var(--rule); margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+  .block__title { padding: 1rem 1.1rem; }
+  .block__title p { color: var(--ink-2); max-width: 34rem; margin-bottom: 0.5rem; }
+  .block__meta { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); border-top: 1px solid var(--rule); }
+  .block__meta div { padding: 0.65rem 1.1rem; border-right: 1px solid var(--rule-soft); border-bottom: 1px solid var(--rule-soft); }
+  dd { margin: 0.2rem 0 0; }
+  @media (min-width: 900px) {
+    .block { grid-template-columns: 1.6fr 1fr; }
+    .block__meta { border-top: 0; border-left: 1px solid var(--rule); grid-template-columns: 1fr; align-content: start; }
+  }
+  .cover { margin: 0 0 clamp(2rem, 5vw, 4rem); }
+  .cover img { max-height: 85vh; width: auto; }
+  .body { margin-bottom: clamp(2rem, 5vw, 4rem); }
+  .links { list-style: none; padding: 0; margin: 0 0 3rem; display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+  .next { display: flex; justify-content: space-between; align-items: baseline; margin-top: clamp(3rem, 8vw, 6rem); border-top: 1px solid var(--rule-soft); padding-top: 0.75rem; }
+</style>
