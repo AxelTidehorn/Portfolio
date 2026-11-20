@@ -45,7 +45,9 @@ const path = Astro.url.pathname;
 
   /* A stable header height is part of the homepage composition, not an overlay. */
   :global(body.homepage-presentation) .masthead {
-    position: sticky; top: 0; z-index: 40;
+    flex: 0 0 var(--presentation-header-height);
+    height: var(--presentation-header-height);
+    position: relative; z-index: 40;
     margin-bottom: 0; background: var(--paper);
   }
   :global(body.homepage-presentation) .masthead__inner {
