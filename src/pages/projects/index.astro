@@ -17,6 +17,7 @@ const projects = await getProjects();
           kind={[...p.data.disciplines, p.data.status].filter(Boolean).join(' · ')}
           summary={p.data.summary}
           cover={p.data.cover}
+          uniformCover
           placeholder={p.data.placeholder}
         />
       ))}
