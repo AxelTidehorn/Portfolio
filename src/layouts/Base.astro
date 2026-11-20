@@ -71,13 +71,13 @@ const og = image ? await getImage({ src: image, width: 1200, format: 'jpg' }) : 
   :global(body.homepage-presentation) main { padding-bottom: 0; }
   :global(body.homepage-presentation) > footer.wrap { display: none; }
 
-  @media (prefers-reduced-motion: no-preference) and (min-height: 621px) {
+  @media (prefers-reduced-motion: no-preference) and (min-height: 701px) {
     :global(html:has(body.homepage-presentation)) {
       scroll-snap-type: y mandatory;
       scroll-padding-top: var(--presentation-header-height);
     }
   }
-  @media (prefers-reduced-motion: reduce), (max-height: 620px) {
+  @media (prefers-reduced-motion: reduce), (max-height: 700px) {
     :global(html:has(body.homepage-presentation)) {
       scroll-snap-type: none;
       scroll-behavior: auto;
