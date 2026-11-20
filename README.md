@@ -23,7 +23,7 @@ npm test          # unit tests (node --test)
 | `src/components/` | `TitleBlock` (header), `Gallery` (+ lightbox), `WorkCard`, `Logo`. |
 | `src/layouts/Base.astro` | HTML shell, SEO/meta tags, header, footer. |
 | `src/pages/` | Routes: `/`, `/photography/`, `/photography/<series>/`, `/projects/`, `/projects/<project>/`, `/about/`. |
-| `src/styles/global.css` | Design tokens (colours, fonts, spacing) and base styles. |
+| `src/styles/global.css` | Design tokens (colours, fonts, spacing, paper grid) and base styles. |
 
 Content is separate from display: adding or editing work never requires touching components.
 
@@ -84,6 +84,13 @@ Search for `placeholder: true` and `PLACEHOLDER` in `src/`. Files to finish:
 - `src/content/**` — all records; `photography/placeholder-series.md` is a demo record and can be deleted
 - `src/assets/placeholders/` — delete once nothing references it (the build fails if something still does, which is a useful check). `npm run placeholders` regenerates them.
 
+## Visual system
+
+- **Type:** Archivo (variable weight + width; headings run condensed) and IBM Plex Mono for labels/metadata. Both are self-hosted via `@fontsource` packages, imported at the top of `global.css`.
+- **Paper:** overview pages have a faint drafting grid and a slight copy-burn at the viewport edges (`body` and `body::before` in `global.css`). Gallery pages (`compact` layout) get plain paper via `body.quiet`.
+- **Pen rules:** add `class="pen"` to an element and set `--pen` to border widths (e.g. `--pen: 2px 0 0 0` for a top rule). The line is drawn on a pseudo-element and roughened by the `#pen` SVG filter in `Base.astro` (wobble + ink density). Tune the filter there; text and images are never filtered.
+- **Document surface:** `class="sheet"` adds faint fibre and edge tone to supporting surfaces (title blocks, metadata tables). Never on photographs.
+
 ## Deploying to Cloudflare Pages
 
 Not configured yet. In the Cloudflare dashboard: **Workers & Pages → Create → Pages → Connect to Git**, pick this repository, then:
@@ -97,7 +104,6 @@ Every push to a branch gets a preview URL; `main` becomes production. Attach `ax
 
 ## Known limitations
 
-- Fonts are system fonts (Helvetica Neue/Arial + system monospace). Self-host a typeface later in `global.css` if wanted.
 - No i18n: UI copy is English; `lang` is set in `src/data/site.ts`.
 - Lightbox loads one large (≤2560 px) version per image; no zoom/pan beyond that.
 - Inline images in project text are limited to the text column width; use `gallery` for full-width images.

@@ -5,16 +5,16 @@ import { getSeries } from '../../lib/work';
 
 const series = await getSeries();
 ---
-<Base title="Photography" description="Photographic series by Axel Tidehorn." sheet="01 Photography" image={series[0]?.data.cover.src}>
+<Base title="Photography" description="Photographic series by Axel Tidehorn." sheet="Photography" image={series[0]?.data.cover.src}>
   <div class="wrap">
-    <h1 class="visually-hidden">Photography</h1>
+    <header class="sec-head pen"><span class="label">01</span><h1>Photography</h1><span class="label">{String(series.length).padStart(2, '0')} series</span></header>
     <ol class="series">
       {series.map((s, i) => (
         <li>
           <a href={`/photography/${s.id}/`}>
             <Image src={s.data.cover.src} alt={s.data.cover.alt} widths={[640, 1000, 1500, 2000]} sizes="(min-width: 900px) 66vw, 100vw" quality={85} loading={i === 0 ? 'eager' : 'lazy'} />
           </a>
-          <div class="series__text">
+          <div class="series__text pen">
             <span class="label">{String(i + 1).padStart(2, '0')} · {s.data.images.length} images</span>
             <h2><a href={`/photography/${s.id}/`}>{s.data.title}</a></h2>
             <p>{s.data.summary}</p>
@@ -27,14 +27,15 @@ const series = await getSeries();
 </Base>
 
 <style>
-  .series { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(3rem, 8vw, 6rem); }
+  .sec-head h1 { margin: 0; flex: 1; font-size: clamp(2rem, 4vw, 3.25rem); }
+  .series { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space); }
   .series li { display: grid; gap: 1rem; }
-  .series img { max-height: 80vh; width: auto; }
-  .series__text { border-top: 1px solid var(--rule); padding-top: 0.6rem; }
+  .series img { max-height: 76vh; width: auto; }
+  .series__text { --pen: 2px 0 0 0; padding-top: 0.6rem; }
   .series__text h2 { margin: 0.4rem 0; }
   .series__text h2 a { text-decoration: none; }
   .series__text p { color: var(--ink-2); max-width: 30rem; }
   @media (min-width: 900px) {
-    .series li { grid-template-columns: minmax(0, 3fr) minmax(14rem, 1fr); align-items: end; }
+    .series li { grid-template-columns: minmax(0, 1fr) 19rem; gap: 2rem; align-items: end; }
   }
 </style>
