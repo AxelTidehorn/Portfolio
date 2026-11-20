@@ -43,7 +43,7 @@ const hero = site.hero.image;
       <div class="intro-copy">
         <div class="intro-copy__top">
           <span class="label">Independent practice / Sweden</span>
-          <span class="intro-copy__mark" aria-hidden="true">↗︎</span>
+          
         </div>
         <div class="intro-copy__bottom">
           <h1 id="home-title">Axel <span>Tidehorn<b>.</b></span></h1>
@@ -113,7 +113,6 @@ const hero = site.hero.image;
           <header class="index-heading">
             <div class="index-heading__label">
               <span class="label">Directory / {pad(pageIndex + 1)}</span>
-              <span aria-hidden="true">↗</span>
             </div>
             <div class="index-heading__title">
               <h2 id={`index-title-${pageIndex + 1}`}>Index of work</h2>
@@ -201,7 +200,7 @@ const hero = site.hero.image;
 .intro-copy { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, .9fr); align-items: end; padding: clamp(14px, 2vw, 30px); gap: 12px 40px; min-height: 0; background: var(--accent); }
 .intro-copy__top { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: start; }
 .intro-copy__top .label { color: var(--ink); }
-.intro-copy__mark { font-size: 24px; line-height: .7; }
+
 .intro-copy__bottom { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, .9fr); align-items: end; gap: 10px 40px; }
 .intro-copy h1 { font-size: clamp(40px, 5vw, 88px); line-height: .85; letter-spacing: -.052em; font-weight: 810; font-stretch: 73%; margin: 0; }
 .intro-copy h1 b { color: var(--paper); font-weight: inherit; }
@@ -241,7 +240,7 @@ const hero = site.hero.image;
 .index-layout { display: grid; grid-template-rows: auto minmax(0, 1fr); }
 .index-heading { display: grid; grid-template-columns: minmax(145px, .38fr) minmax(0, 1.62fr); border-top: 2px solid var(--ink); }
 .index-heading__label { padding: clamp(12px, 1.8vw, 26px); display: flex; justify-content: space-between; gap: 12px; background: var(--accent); }
-.index-heading__label > span:last-child { font-size: clamp(28px, 4vw, 52px); line-height: .8; }
+
 .index-heading__label .label { color: var(--ink); }
 .index-heading__title { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; padding: clamp(14px, 1.9vw, 28px); border-bottom: 2px solid var(--ink); }
 .index-heading h2 { font-size: clamp(30px, 4.6vw, 66px); margin: 0; }
@@ -293,7 +292,7 @@ const hero = site.hero.image;
   .intro-copy { display: flex; flex-direction: column; justify-content: space-between; gap: 4px; padding: 13px 15px; }
   .intro-copy__top { display: flex; width: 100%; }
   .intro-copy__top .label { font-size: 9px; }
-  .intro-copy__mark { font-size: 20px; }
+
   .intro-copy__bottom { display: flex; flex-direction: column; align-items: stretch; gap: 4px; }
   .intro-copy h1 { font-size: clamp(29px, 8.7vw, 40px); line-height: .95; white-space: nowrap; }
   .intro-copy p { font-size: clamp(12px, 3.4vw, 15px); line-height: 1.12; margin: 0 0 4px; }
@@ -309,7 +308,7 @@ const hero = site.hero.image;
   .stage--poster .feature-copy p, .stage--offset .feature-copy p, .stage--band .feature-copy p { font-size: clamp(12px, 3.2vw, 14px); line-height: 1.12; margin: 0 0 7px; }
   .index-heading { grid-template-columns: 1fr; }
   .index-heading__label { align-items: center; padding: 8px 12px; }
-  .index-heading__label > span:last-child { font-size: 20px; }
+
   .index-heading__title { padding: 10px 12px; }
   .index-heading h2 { font-size: 28px; }
   .index-list { padding-block: 8px; }
