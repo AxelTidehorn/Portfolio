@@ -114,6 +114,20 @@ const hero = site.hero.image;
 </Base>
 
 <style>
+  /* Chapter snap on wide screens only. The root viewport is the scroll container;
+     no height locks or JS wheel interception. With proximity, long galleries can
+     scroll freely inside a section and only settle at a nearby chapter boundary. */
+  @media (min-width: 1100px) and (prefers-reduced-motion: no-preference) {
+    :global(html:has(#intro)) {
+      scroll-snap-type: y proximity;
+      scroll-padding-top: clamp(12px, 2vw, 28px);
+    }
+    #intro, #work, #directory {
+      scroll-snap-align: start;
+      scroll-snap-stop: normal;
+    }
+  }
+
   /* A photograph-led first composition. Typography identifies the maker; it does not replace the image. */
   .hero { margin-bottom: clamp(72px, 9vw, 140px); }
   .hero__heading { padding-bottom: clamp(16px, 2.3vw, 32px); }
