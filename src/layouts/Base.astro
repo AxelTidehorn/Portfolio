@@ -63,7 +63,9 @@ const og = image ? await getImage({ src: image, width: 1200, format: 'jpg' }) : 
 
   /* Home uses composed full-viewport chapters and an integrated final page.
      Normal pages keep the regular document and footer. */
-  :global(body.homepage-presentation) {
+  /* Define the viewport chrome size on html so both the body layout and
+     root scrolling element resolve the same CSS custom property. */
+  :global(html:has(body.homepage-presentation)) {
     --presentation-header-height: clamp(68px, 7svh, 84px);
   }
   :global(body.homepage-presentation) main { padding-bottom: 0; }
