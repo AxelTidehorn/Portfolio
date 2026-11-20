@@ -6,12 +6,10 @@ import { site } from '../data/site';
 import { getAllWork } from '../lib/work';
 
 const all = await getAllWork();
-// Interleave featured photography and projects so neither dominates.
+// Photography leads the selection; other disciplines remain immediately discoverable.
 const featuredPhoto = all.filter((w) => w.featured && w.kind === 'Photography');
 const featuredOther = all.filter((w) => w.featured && w.kind !== 'Photography');
-const selected = Array.from({ length: Math.max(featuredPhoto.length, featuredOther.length) })
-  .flatMap((_, i) => [featuredPhoto[i], featuredOther[i]])
-  .filter(Boolean);
+const selected = [...featuredPhoto, ...featuredOther];
 const counts = {
   '/photography/': all.filter((w) => w.kind === 'Photography').length,
   '/projects/': all.filter((w) => w.kind !== 'Photography').length,
@@ -58,7 +56,7 @@ const hero = site.hero.image;
 
   <section class="selected wrap" aria-labelledby="sel">
     <header class="sec-head rule">
-      <span class="label">§ 01</span>
+      <span class="label">01 / Portfolio</span>
       <h2 id="sel">Selected work</h2>
       <span class="label">{pad(selected.length)} items</span>
     </header>
@@ -80,7 +78,7 @@ const hero = site.hero.image;
 
   <section class="index wrap" aria-labelledby="idx">
     <header class="sec-head rule">
-      <span class="label">§ 02</span>
+      <span class="label">02 / Index</span>
       <h2 id="idx">Index of work</h2>
     </header>
     <table>
@@ -106,12 +104,6 @@ const hero = site.hero.image;
   .hero__fig { margin: 0; }
   .hero__img { position: relative; display: inline-block; vertical-align: top; max-width: 100%; }
   .hero__img img { max-height: 78vh; width: auto; }
-  /* Crop marks one module outside the photograph's corners, never on it. */
-  .hero__img::before, .hero__img::after {
-    content: ''; position: absolute; width: 16px; height: 16px; border: 0 solid var(--rule);
-  }
-  .hero__img::before { top: -8px; left: -8px; border-width: 1px 0 0 1px; }
-  .hero__img::after { bottom: -9px; right: -9px; border-width: 0 1px 1px 0; }
 
   .hero__side { display: flex; flex-direction: column; }
   .hero__fighead { --rt: var(--w-outline); display: flex; justify-content: space-between; align-items: center; padding-top: 8px; }
@@ -132,13 +124,13 @@ const hero = site.hero.image;
   }
 
   .selected { margin-bottom: var(--space); }
-  .selected__grid { display: flex; flex-wrap: wrap; gap: var(--gap); align-items: flex-start; }
-  .selected__grid > :global(*) { width: 100%; }
+  .selected__grid {
+    display: grid;
+    gap: clamp(28px, 3vw, 48px) var(--gap);
+  }
   @media (min-width: 760px) {
-    /* Alternating wide/narrow columns. Wide = 58% rounded down to the major grid; narrow = the rest. */
-    .selected__grid > :global(*) { width: calc(100% - var(--gap) - round(down, (100% - var(--gap)) * 0.58, 40px)); }
-    .selected__grid > :global(:nth-child(4n + 1)),
-    .selected__grid > :global(:nth-child(4n + 4)) { width: round(down, (100% - var(--gap)) * 0.58, 40px); }
+    .selected__grid { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); }
+    .selected__grid > :global(:nth-child(4n + 3)) { grid-column: 2; }
   }
 
   /* Rows are exactly 40px; lines are inset shadows on each cell's top edge (no layout shift). */
@@ -152,13 +144,13 @@ const hero = site.hero.image;
   tbody tr:first-child td { box-shadow: inset 0 1px 0 var(--rule); }
   tbody tr:last-child td { box-shadow: inset 0 1px 0 var(--rule-soft), 0 1px 0 var(--rule); }
   th:nth-child(1) { width: 48px; }
-  th:nth-child(2) { width: round(down, (100cqw - 48px) * 0.5, 8px); }
+  th:nth-child(2) { width: 48%; }
   .index__title { font-size: 18px; font-weight: 600; font-stretch: 88%; }
   .index__title a { text-decoration: none; }
   @media (max-width: 759px) { td:nth-child(4), th:nth-child(4) { display: none; } }
   @media (min-width: 760px) {
     th:nth-child(1) { width: 80px; }
-    th:nth-child(2) { width: round(down, (100cqw - 80px) * 0.4, 40px); }
-    th:nth-child(3) { width: round(down, (100cqw - 80px) * 0.35, 40px); }
+    th:nth-child(2) { width: 40%; }
+    th:nth-child(3) { width: 30%; }
   }
 </style>
