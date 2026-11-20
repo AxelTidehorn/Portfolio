@@ -17,8 +17,8 @@ const counts = {
 const pad = (n: number) => String(n).padStart(2, '0');
 const hero = site.hero.image;
 ---
-<Base image={hero} sheet="Index">
-  <section class="opening wrap" aria-labelledby="opening-title">
+<Base image={hero} sheet="Index">\n  <div class="home-story">
+  <section id="intro" class="opening wrap story-section" aria-labelledby="opening-title">
     <div class="opening__eyebrow">
       <span class="label">Independent practice / Sweden</span>
       <span class="label">Photography · Objects · Experiments</span>
@@ -29,11 +29,11 @@ const hero = site.hero.image;
     </h1>
     <div class="opening__bottom">
       <p>Photography, design and the pleasure of figuring things out.</p>
-      <span class="opening__edition label">AT / Selected practice</span>
+      <a class="opening__next label" href="#photograph">Explore ↓</a>
     </div>
   </section>
 
-  <section class="hero wrap" aria-label="Featured photography">
+  <section id="photograph" class="hero wrap story-section" aria-label="Featured photography">
     <figure class="hero__fig">
       <Image
         src={hero}
@@ -70,7 +70,7 @@ const hero = site.hero.image;
     </aside>
   </section>
 
-  <section class="selected wrap" aria-labelledby="sel">
+  <section id="work" class="selected wrap story-section" aria-labelledby="sel">
     <header class="sec-head rule">
       <span class="label">02 / Selection</span>
       <h2 id="sel">Selected work</h2>
@@ -92,7 +92,7 @@ const hero = site.hero.image;
     </div>
   </section>
 
-  <section class="index wrap" aria-labelledby="idx">
+  <section id="directory" class="index wrap story-section" aria-labelledby="idx">
     <header class="sec-head rule">
       <span class="label">03 / Index</span>
       <h2 id="idx">Index of work</h2>
@@ -113,7 +113,7 @@ const hero = site.hero.image;
       </tbody>
     </table>
   </section>
-</Base>
+  </div>\n</Base>
 
 <style>
   /* Poster-like first impression: one monumental typographic move, then the photograph. */
@@ -211,5 +211,74 @@ const hero = site.hero.image;
     .hero__panel { min-height: 300px; }
     .selected .sec-head { flex-wrap: wrap; gap: 8px 14px; }
     .selected .sec-head h2 { order: 2; flex-basis: 100%; }
+  }
+
+  /* Home page is an intentional sequence of compositions.
+     Snap applies only to wide pointer-led layouts; tall sections can still be
+     scrolled through without trapping content. Natural flow elsewhere. */
+  :global(html:has(.home-story)) { scroll-padding-top: 0; }
+  .home-story { overflow: clip; }
+  .story-section { scroll-snap-align: start; scroll-snap-stop: always; }
+  .opening {
+    background: var(--accent);
+    min-height: calc(100svh - clamp(90px, 10vw, 142px));
+    padding: clamp(20px, 3vw, 48px);
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .opening__eyebrow { border-bottom: 2px solid var(--ink); }
+  .opening__title {
+    font-size: clamp(72px, 14.8vw, 245px);
+    font-stretch: 60%; line-height: .79; letter-spacing: -.075em;
+    overflow-wrap: normal;
+    margin: 40px 0;
+  }
+  .opening__title .opening__second { padding-left: 0; }
+  .opening__dot { color: var(--paper); }
+  .opening__bottom { border-top: 2px solid var(--ink); padding-top: 16px; }
+  .opening__bottom p { font-weight: 720; max-width: 620px; font-size: clamp(19px, 2.3vw, 34px); }
+  .opening .label { color: var(--ink); }
+  .opening__next { color: var(--ink); white-space: nowrap; font-weight: 650; text-decoration: none; }
+  .opening__next:hover { color: var(--ink); text-decoration: underline; }
+  .hero {
+    min-height: 100svh;
+    padding-top: clamp(24px, 4vw, 60px);
+    padding-bottom: clamp(24px, 4vw, 60px);
+    align-content: center;
+  }
+  .hero__fig { justify-content: center; }
+  .hero__fig img { max-height: calc(100svh - 155px); }
+  .selected {
+    min-height: 100svh;
+    padding-top: clamp(24px, 4vw, 60px);
+  }
+  .selected .sec-head {
+    padding: clamp(20px, 3vw, 48px);
+    margin-bottom: clamp(24px, 3vw, 48px);
+    background: var(--accent);
+    border: 0;
+    align-items: end;
+  }
+  .selected .sec-head .label { color: var(--ink); }
+  .selected .sec-head h2 { line-height: .87; }
+  .index {
+    min-height: 100svh;
+    padding-top: clamp(24px, 4vw, 60px);
+  }
+  .index .sec-head { border-top: 10px solid var(--accent); }
+  @media (min-width: 1100px) and (prefers-reduced-motion: no-preference) {
+    :global(html:has(.home-story)) { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  }
+  @media (max-width: 1099px) {
+    .opening { min-height: min(76svh, 840px); }
+    .hero, .selected, .index { min-height: 0; }
+    .hero__fig img { max-height: 75svh; }
+  }
+  @media (max-width: 650px) {
+    .opening { padding: 22px; min-height: 65svh; }
+    .opening__title { font-size: clamp(43px, 13vw, 88px); letter-spacing: -.055em; }
+    .opening__bottom { align-items: end; }
+    .opening__bottom p { font-size: 19px; max-width: 230px; }
+    .selected .sec-head { padding: 20px; }
+    .selected .sec-head h2 { font-size: clamp(41px, 9vw, 65px); }
   }
 </style>
