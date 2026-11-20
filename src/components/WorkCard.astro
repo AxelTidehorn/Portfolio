@@ -6,17 +6,19 @@ interface Props {
   href: string;
   title: string;
   kind: string;
+  no?: string; // optional item number shown in the metadata row
   summary?: string;
   cover: { src: ImageMetadata; alt: string };
   placeholder?: boolean;
   sizes?: string;
 }
-const { href, title, kind, summary, cover, placeholder, sizes = '(min-width: 760px) 40vw, 100vw' } = Astro.props;
+const { href, title, kind, no, summary, cover, placeholder, sizes = '(min-width: 760px) 40vw, 100vw' } = Astro.props;
 ---
 <article class="card">
   <a href={href}>
     <Image src={cover.src} alt={cover.alt} widths={[480, 800, 1200, 1600]} sizes={sizes} quality={82} />
-    <div class="card__meta">
+    <div class="card__meta pen">
+      {no && <span class="label card__no">{no}</span>}
       <span class="label">{kind}</span>
       {placeholder && <span class="badge">Placeholder</span>}
     </div>
@@ -29,10 +31,13 @@ const { href, title, kind, summary, cover, placeholder, sizes = '(min-width: 760
   .card a { text-decoration: none; display: block; }
   .card img { width: 100%; background: var(--paper-2); }
   .card__meta {
-    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
-    border-top: 1px solid var(--rule); margin-top: 0.75rem; padding-top: 0.5rem;
+    --pen: 1.5px 0 0 0;
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-top: 0.7rem; padding-top: 0.45rem;
   }
-  h3 { font-size: 1.2rem; margin: 0.4rem 0 0.3rem; }
+  .card__meta .badge { margin-left: auto; }
+  .card__no { color: var(--ink); }
+  h3 { margin: 0.35rem 0 0.25rem; }
   .card a:hover h3 { color: var(--accent); }
   p { color: var(--ink-2); margin: 0; max-width: 34rem; }
 </style>

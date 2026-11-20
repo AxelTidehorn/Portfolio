@@ -20,18 +20,18 @@ const rows = [
   ...meta,
 ];
 ---
-<Base title={title} description={summary} image={cover.src} sheet={`02 Projects / ${title}`}>
+<Base title={title} description={summary} image={cover.src} sheet={`Projects / ${title}`}>
   <article class="wrap">
     <a class="label back" href="/projects/">← Projects</a>
-    <header class="block">
+    <header class="block pen sheet">
       <div class="block__title">
         <h1>{title}</h1>
         <p>{summary}</p>
         {placeholder && <span class="badge">Placeholder</span>}
       </div>
       {rows.length > 0 && (
-        <dl class="block__meta">
-          {rows.map((r) => (<div><dt class="label">{r.label}</dt><dd>{r.value}</dd></div>))}
+        <dl class="block__meta pen">
+          {rows.map((r) => (<div class="pen"><dt class="label">{r.label}</dt><dd>{r.value}</dd></div>))}
         </dl>
       )}
     </header>
@@ -49,7 +49,7 @@ const rows = [
     {gallery.length > 0 && <Gallery images={gallery} label={`${title} — images`} />}
 
     {next.id !== entry.id && (
-      <nav class="next" aria-label="Projects">
+      <nav class="next pen" aria-label="Projects">
         <span class="label">Next project</span>
         <a href={`/projects/${next.id}/`}>{next.data.title} →</a>
       </nav>
@@ -58,20 +58,24 @@ const rows = [
 </Base>
 
 <style>
-  .back { display: inline-block; margin-bottom: 1rem; text-decoration: none; }
-  .block { display: grid; border: 1px solid var(--rule); margin-bottom: clamp(2rem, 5vw, 3.5rem); }
-  .block__title { padding: 1rem 1.1rem; }
+  .back { display: inline-block; margin-bottom: 0.75rem; text-decoration: none; }
+  .block { --pen: 2px; display: grid; margin-bottom: clamp(1.5rem, 4vw, 2.5rem); }
+  .block__title { padding: 1rem 1.1rem 1.1rem; }
+  .block__title h1 { margin-bottom: 0.3em; }
   .block__title p { color: var(--ink-2); max-width: 34rem; margin-bottom: 0.5rem; }
-  .block__meta { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); border-top: 1px solid var(--rule); }
-  .block__meta div { padding: 0.65rem 1.1rem; border-right: 1px solid var(--rule-soft); border-bottom: 1px solid var(--rule-soft); }
+  .block__meta { --pen: 1.5px 0 0 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
+  .block__meta div { --pen: 0 0 1px 0; --pen-color: var(--rule-soft); padding: 0.55rem 1.1rem; }
+  .block__meta div:last-child { --pen: 0; }
+  dd { font-weight: 560; }
   dd { margin: 0.2rem 0 0; }
   @media (min-width: 900px) {
     .block { grid-template-columns: 1.6fr 1fr; }
-    .block__meta { border-top: 0; border-left: 1px solid var(--rule); grid-template-columns: 1fr; align-content: start; }
+    .block__meta { --pen: 0 0 0 1.5px; grid-template-columns: 1fr; align-content: start; }
   }
-  .cover { margin: 0 0 clamp(2rem, 5vw, 4rem); }
+  .cover { margin: 0 0 clamp(1.75rem, 4vw, 3rem); }
   .cover img { max-height: 85vh; width: auto; }
   .body { margin-bottom: clamp(2rem, 5vw, 4rem); }
   .links { list-style: none; padding: 0; margin: 0 0 3rem; display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
-  .next { display: flex; justify-content: space-between; align-items: baseline; margin-top: clamp(3rem, 8vw, 6rem); border-top: 1px solid var(--rule-soft); padding-top: 0.75rem; }
+  .next { --pen: 1.5px 0 0 0; display: flex; justify-content: space-between; align-items: baseline; margin-top: var(--space); padding-top: 0.75rem; }
+  .next a { font-size: 1.3rem; font-weight: 620; font-stretch: 85%; text-decoration: none; }
 </style>
