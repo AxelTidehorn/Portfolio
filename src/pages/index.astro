@@ -114,18 +114,23 @@ const hero = site.hero.image;
 </Base>
 
 <style>
-  /* Chapter snap on wide screens only. The root viewport is the scroll container;
-     no height locks or JS wheel interception. With proximity, long galleries can
-     scroll freely inside a section and only settle at a nearby chapter boundary. */
-  @media (min-width: 1100px) and (prefers-reduced-motion: no-preference) {
+  /* Intentional chapter navigation on the homepage only. Mandatory snap
+     makes the chapter boundaries real rather than an occasional proximity
+     effect. Oversized sections remain freely scrollable within their content;
+     no fixed heights, wheel interception, nested scroll areas or smooth-scroll
+     overrides. Reduced-motion users receive ordinary scrolling. */
+  @media (prefers-reduced-motion: no-preference) {
     :global(html:has(#intro)) {
-      scroll-snap-type: y proximity;
-      scroll-padding-top: clamp(12px, 2vw, 28px);
+      scroll-snap-type: y mandatory;
+      scroll-padding-top: 0;
     }
     #intro, #work, #directory {
       scroll-snap-align: start;
       scroll-snap-stop: normal;
     }
+    /* The masthead is before the first chapter. Treat it as part of the
+       opening composition so the initial snap position stays at page top. */
+    #intro { scroll-margin-top: clamp(80px, 8vw, 122px); }
   }
 
   /* A photograph-led first composition. Typography identifies the maker; it does not replace the image. */
